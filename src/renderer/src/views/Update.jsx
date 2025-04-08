@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import keplerIcon from '../assets/icon.png'
 import { ExternalLinkIcon } from 'lucide-react'
+import { Loader } from '../components/loader'
 
 export function Update() {
   const [progress, setProgress] = useState(0)
   const [ready, setReady] = useState(false)
+  const [clicked, setClicked] = useState(false)
 
   useEffect(() => {
     window.api.onUpdateProgress((progress) => {
@@ -16,6 +18,7 @@ export function Update() {
   }, [])
 
   const handleInstall = () => {
+    setClicked(true)
     window.api.installUpdate()
   }
 
@@ -30,7 +33,7 @@ export function Update() {
               <div className="w-full">
                 <img src={keplerIcon} alt="Kepler icon" className="w-16" />
               </div>
-              <div className="space-y-2 p-8 bg-black/25">
+              <div className="space-y-2 p-8 bg-black/25 rounded-xl">
                 <div className="flex items-center justify-between">
                   <h1 className="text-xl font-bold">
                     {ready ? 'Mise à jour terminée' : 'Mise à jour en cours'}
@@ -61,10 +64,12 @@ export function Update() {
                 )}
                 {ready && (
                   <button
-                    className="p-4 rounded-lg font-semibold text-black bg-white hover:bg-neutral-200"
+                    className="p-3 px-5 rounded-lg font-semibold text-black bg-white hover:bg-violet-300 transition-all flex items-center gap-2 cursor-pointer"
                     onClick={handleInstall}
+                    disabled={clicked}
                   >
-                    Redémarrer et installer
+                    {clicked && <Loader />}
+                    {clicked ? 'Installation' : 'Redémarrer et installer'}
                   </button>
                 )}
               </div>

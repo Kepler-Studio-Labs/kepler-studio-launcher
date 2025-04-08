@@ -112,7 +112,7 @@ app.whenReady().then(() => {
   ipcMain.on('close', () => app.quit())
   ipcMain.on('minimize', () => win.minimize())
   ipcMain.on('disconnect', () => disconnect())
-  ipcMain.on('install-update', () => {
+  ipcMain.handle('install-update', () => {
     autoUpdater.quitAndInstall()
   })
   ipcMain.handle('get-auth-data', async () => {
