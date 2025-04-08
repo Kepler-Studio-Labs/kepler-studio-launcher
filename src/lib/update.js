@@ -1,4 +1,5 @@
 import { app } from 'electron'
+import { getApiHost } from './api'
 
 const fs = require('fs')
 const path = require('path')
@@ -17,7 +18,7 @@ export const getInstalledVersion = () => {
 
 export const getLatestVersion = async () => {
   try {
-    const res = await fetch(`${process.env.API_HOST}/update/game/version`)
+    const res = await fetch(`${getApiHost()}/update/game/version`)
 
     if (!res.ok) {
       const text = await res.text()
@@ -37,6 +38,7 @@ export const saveVersionFile = (version) => {
   try {
     if (fs.existsSync(versionFilePath)) fs.rmSync(versionFilePath)
     fs.writeFileSync(versionFilePath, version)
+    console.log('done')
   } catch (error) {
     console.error(error)
     return false

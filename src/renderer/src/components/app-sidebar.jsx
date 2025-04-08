@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import icon from '../assets/icon.png'
 import { UnplugIcon } from 'lucide-react'
 import { UserIcon } from 'lucide-react'
@@ -9,6 +9,7 @@ import { BoxIcon } from 'lucide-react'
 
 function AppSidebar() {
   const navigate = useNavigate()
+  const location = useLocation()
 
   const handleDisconnect = () => {
     window.electron.ipcRenderer.send('disconnect')
@@ -26,7 +27,7 @@ function AppSidebar() {
         <button
           className={clsx(
             'rounded-full p-4 w-full flex items-center gap-2 cursor-pointer relative group/item',
-            window.location.pathname === '/profile'
+            location.pathname === '/profile'
               ? 'bg-violet-700'
               : 'bg-neutral-800 hover:bg-white hover:text-black'
           )}
@@ -41,7 +42,7 @@ function AppSidebar() {
           <button
             className={clsx(
               'rounded-full p-4 w-full flex items-center gap-2 cursor-pointer relative group/item',
-              window.location.pathname === '/main'
+              location.pathname === '/main'
                 ? 'bg-violet-700'
                 : 'bg-neutral-800 hover:bg-white hover:text-black'
             )}
@@ -52,7 +53,7 @@ function AppSidebar() {
             <span
               className={clsx(
                 'absolute w-full bg-neutral-700 left-0 right-0 top-8 bottom-0 z-0',
-                window.location.pathname === '/main'
+                location.pathname === '/main'
                   ? 'bg-violet-700'
                   : 'bg-neutral-800 group-hover/item:bg-white group-hover/item:text-black'
               )}
@@ -65,7 +66,7 @@ function AppSidebar() {
           <button
             className={clsx(
               'p-4 w-full flex items-center gap-2 cursor-pointer relative',
-              window.location.pathname === '/cobblemon'
+              location.pathname === '/cobblemon'
                 ? 'bg-violet-700'
                 : 'bg-neutral-800 hover:bg-white hover:text-black'
             )}
@@ -81,7 +82,7 @@ function AppSidebar() {
           <button
             className={clsx(
               'rounded-full p-4 w-full flex items-center gap-2 cursor-pointer relative group/item',
-              window.location.pathname === '/settings'
+              location.pathname === '/settings'
                 ? 'bg-violet-700'
                 : 'bg-neutral-800 hover:bg-white hover:text-black'
             )}
@@ -92,7 +93,7 @@ function AppSidebar() {
             <span
               className={clsx(
                 'absolute w-full bg-neutral-700 left-0 right-0 bottom-8 top-0 z-0',
-                window.location.pathname === '/settings'
+                location.pathname === '/settings'
                   ? 'bg-violet-700'
                   : 'bg-neutral-800 group-hover/item:bg-white group-hover/item:text-black'
               )}

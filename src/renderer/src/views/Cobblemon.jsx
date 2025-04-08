@@ -2,6 +2,7 @@ import AppSidebar from '../components/app-sidebar'
 import { GameButton } from '../components/game-button'
 import Header from '../components/header'
 import { SettingsIcon } from 'lucide-react'
+import darkrai from '../assets/darkrai.png'
 
 function Cobblemon() {
   return (
@@ -30,7 +31,7 @@ function Cobblemon() {
             </div>
             <div></div>
             <img
-              src="/src/assets/darkrai.png"
+              src={darkrai}
               alt=""
               className="absolute right-10 bottom-6 w-80 rotate-[20deg] mix-blend-multiply grayscale"
             />

@@ -6,10 +6,9 @@ import { disconnect, getAuthData, saveAuthData } from '../lib/auth'
 import { getInstalledVersion, getLatestVersion, saveVersionFile } from '../lib/update'
 import fs from 'fs'
 import unzipper from 'unzipper'
-import dotenv from 'dotenv'
 import { getKeplerPath } from '../lib/path'
 import { bootstrapGame } from '../lib/bootstrap'
-dotenv.config()
+import { getApiHost } from '../lib/api'
 
 let gameProcess = null // Stocke la référence du processus lanc
 
@@ -55,6 +54,14 @@ function createWindow() {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 
+  mainWindow.webContents.on('before-input-event', (_, input) => {
+    if (input.type === 'keyDown' && input.key === 'F12') {
+      mainWindow.webContents.isDevToolsOpened()
+        ? mainWindow.webContents.closeDevTools()
+        : mainWindow.webContents.openDevTools({ mode: 'left' })
+    }
+  })
+
   return mainWindow
 }
 
@@ -79,7 +86,7 @@ app.whenReady().then(() => {
   })
   ipcMain.handle('get-installed-version', () => getInstalledVersion())
   ipcMain.handle('get-latest-version', async () => await getLatestVersion())
-  ipcMain.handle('get-api-host', () => process.env.API_HOST)
+  ipcMain.handle('get-api-host', () => getApiHost())
   ipcMain.handle('save-downloaded-file', async (event, { fileName, fileData }) => {
     try {
       const downloadsDir = path.join(getKeplerPath(), 'tmp')

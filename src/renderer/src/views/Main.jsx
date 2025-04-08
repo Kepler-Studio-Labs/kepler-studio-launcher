@@ -2,6 +2,7 @@ import { CompassIcon } from 'lucide-react'
 import AppSidebar from '../components/app-sidebar'
 import Header from '../components/header'
 import { useNavigate } from 'react-router-dom'
+import cobblemon from '../assets/cobblemon.png'
 
 function Main() {
   const navigate = useNavigate()
@@ -33,7 +34,7 @@ function Main() {
               </div>
               <div className="flex flex-col items-start justify-end relative">
                 <img
-                  src="/src/assets/cobblemon.webp"
+                  src={cobblemon}
                   alt="Cobblemon illustration"
                   className="w-full absolute -right-14 -bottom-16"
                 />
