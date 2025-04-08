@@ -8,6 +8,15 @@ const api = {
   onAuthenticationComplete: (callback) => {
     ipcRenderer.on('authentication-complete', () => callback())
   },
+  onUpdateAvailable: (callback) => {
+    ipcRenderer.on('update-available', () => callback())
+  },
+  onUpdateProgress: (callback) => {
+    ipcRenderer.on('update-progress', (_, progress) => callback(progress))
+  },
+  onUpdateReady: (callback) => {
+    ipcRenderer.on('update-ready', () => callback())
+  },
   getAuthData: async () => {
     return await ipcRenderer.invoke('get-auth-data')
   },
@@ -26,7 +35,8 @@ const api = {
     ipcRenderer.on('game-closed', (event, code) => callback(code))
   },
   stopGame: () => ipcRenderer.invoke('stop-game'),
-  updateDiscordRPC: (data) => ipcRenderer.invoke('update-discord-rpc', data)
+  updateDiscordRPC: (data) => ipcRenderer.invoke('update-discord-rpc', data),
+  installUpdate: () => ipcRenderer.invoke('install-update')
 }
 
 if (process.contextIsolated) {

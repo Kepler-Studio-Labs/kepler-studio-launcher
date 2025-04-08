@@ -26,8 +26,11 @@ importers:
       discord-rpc:
         specifier: ^4.0.1
         version: 4.0.1
+      electron-is-dev:
+        specifier: ^3.0.1
+        version: 3.0.1
       electron-updater:
-        specifier: ^6.3.9
+        specifier: ^6.6.2
         version: 6.6.2
       lucide-react:
         specifier: ^0.487.0
@@ -1275,6 +1278,10 @@ packages:
     resolution: {integrity: sha512-y8D4zO+HXGCNxFBV/JlyhFnoQ0Y0K7/sFH+XwIbj47pqaW8S6PGYQbjoObolKBR1ddQFPt4rwp4CnwMJrW3HAw==}
     engines: {node: '>=14.0.0'}
     hasBin: true
+
+  electron-is-dev@3.0.1:
+    resolution: {integrity: sha512-8TjjAh8Ec51hUi3o4TaU0mD3GMTOESi866oRNavj9A3IQJ7pmv+MJVmdZBFGw4GFT36X7bkqnuDNYvkQgvyI8Q==}
+    engines: {node: '>=18'}
 
   electron-osx-sign@0.6.0:
     resolution: {integrity: sha512-+hiIEb2Xxk6eDKJ2FFlpofCnemCbjbT5jz+BKGpVBrRNT3kWTGs4DfNX6IzGwgi33hUcXF+kFs9JW+r6Wc1LRg==}
@@ -3887,6 +3894,8 @@ snapshots:
       yargs: 17.7.2
     transitivePeerDependencies:
       - supports-color
+
+  electron-is-dev@3.0.1: {}
 
   electron-osx-sign@0.6.0:
     dependencies:

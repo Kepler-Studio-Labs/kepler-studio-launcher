@@ -5,9 +5,24 @@ import Main from './views/Main'
 import Cobblemon from './views/Cobblemon'
 import Profile from './views/Profile'
 import Settings from './views/Settings'
+import { useEffect, useState } from 'react'
+import { Update } from './views/Update'
 
 function App() {
-  return (
+  const [isUpdate, setIsUpdate] = useState(false)
+
+  useEffect(() => {
+    window.api.onUpdateAvailable(() => {
+      setIsUpdate(true)
+    })
+  })
+
+  return isUpdate ? (
+    <div className="flex flex-col w-full min-h-screen max-h-screen h-screen bg-neutral-900 text-neutral-200 select-none *:select-none overflow-hidden">
+      <MenuBar />
+      <Update />
+    </div>
+  ) : (
     <div className="flex flex-col w-full min-h-screen max-h-screen h-screen bg-neutral-900 text-neutral-200 select-none *:select-none overflow-hidden">
       <MenuBar />
       <Router>

@@ -9,11 +9,19 @@ import unzipper from 'unzipper'
 import { getKeplerPath } from '../lib/path'
 import { bootstrapGame } from '../lib/bootstrap'
 import { getApiHost } from '../lib/api'
-import { updateElectronApp } from 'update-electron-app'
 import { useDiscordStore } from '../lib/discord'
-updateElectronApp()
+import isDev from 'electron-is-dev'
+import { autoUpdater } from 'electron-updater'
 
 let gameProcess = null // Stocke la référence du processus lanc
+
+if (isDev) {
+  console.log('dev build, skipping update')
+} else {
+  autoUpdater.setFeedURL(
+    `https://update.electronjs.org/Kepler-Studio-Labs/kepler-studio-launcher/win32-x64/${app.getVersion()}`
+  )
+}
 
 useDiscordStore.getState().init()
 
@@ -79,9 +87,34 @@ app.whenReady().then(() => {
 
   let win = createWindow()
 
+  setTimeout(() => {
+    if (!isDev) {
+      autoUpdater.checkForUpdates()
+
+      autoUpdater.on('update-available', () => {
+        win.webContents.send('update-available')
+      })
+
+      autoUpdater.on('update-downloaded', () => {
+        win.webContents.send('update-ready')
+      })
+
+      autoUpdater.on('error', () => {})
+
+      autoUpdater.on('download-progress', (progress) => {
+        win.webContents.send('update-progress', progress.percent)
+      })
+    } else {
+      win.webContents.send('update-available')
+    }
+  }, 3000)
+
   ipcMain.on('close', () => app.quit())
   ipcMain.on('minimize', () => win.minimize())
   ipcMain.on('disconnect', () => disconnect())
+  ipcMain.on('install-update', () => {
+    autoUpdater.quitAndInstall()
+  })
   ipcMain.handle('get-auth-data', async () => {
     const auth = getAuthData()
     return auth
