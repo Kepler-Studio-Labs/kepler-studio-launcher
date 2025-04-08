@@ -1,4 +1,4 @@
-appId: 'github.com/codebyalexx/kepler-studio-launcher'
+appId: 'github.com/Kepler-Studio-Labs/kepler-studio-launcher'
 productName: 'kepler-studio-launcher'
 directories:
   buildResources: build
