@@ -10,9 +10,12 @@ import { getKeplerPath } from '../lib/path'
 import { bootstrapGame } from '../lib/bootstrap'
 import { getApiHost } from '../lib/api'
 import { updateElectronApp } from 'update-electron-app'
+import { useDiscordStore } from '../lib/discord'
 updateElectronApp()
 
 let gameProcess = null // Stocke la référence du processus lanc
+
+useDiscordStore.getState().init()
 
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
@@ -147,6 +150,9 @@ app.whenReady().then(() => {
         win.webContents.send('game-closed', code)
         gameProcess = null
       })
+      gameProcess.stdout.on('data', (data) => {
+        console.log(`stdout: ${data}`)
+      })
     }
     return 'Game started'
   })
@@ -158,6 +164,9 @@ app.whenReady().then(() => {
     } else {
       return 'No game running'
     }
+  })
+  ipcMain.handle('update-discord-rpc', (event, data) => {
+    useDiscordStore.getState().define(data)
   })
 
   app.on('activate', function () {

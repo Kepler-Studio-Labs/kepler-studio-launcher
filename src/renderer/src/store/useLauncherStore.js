@@ -68,6 +68,13 @@ export const useLauncherStore = create((set, get) => ({
   },
   bootstrap: async () => {
     set({ state: 'ingame' })
+    window.api.updateDiscordRPC({
+      details: 'Cobblemon: New Era',
+      state: 'En jeu',
+      smallImageKey: 'pokeball',
+      smallImageText: 'Cobblemon: New Era',
+      startTimestamp: new Date()
+    })
     await window.api.bootstrap()
     window.api.onGameClosed((code) => {
       console.log("Event 'game-closed' reçu avec code", code)
@@ -77,5 +84,12 @@ export const useLauncherStore = create((set, get) => ({
   stopGame: async () => {
     await window.api.stopGame()
     set({ state: 'ready' })
+    window.api.updateDiscordRPC({
+      details: 'Menu principal',
+      state: null,
+      smallImageKey: null,
+      smallImageText: null,
+      startTimestamp: new Date()
+    })
   }
 }))

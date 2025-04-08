@@ -8,7 +8,6 @@ const api = {
   onAuthenticationComplete: (callback) => {
     ipcRenderer.on('authentication-complete', () => callback())
   },
-
   getAuthData: async () => {
     return await ipcRenderer.invoke('get-auth-data')
   },
@@ -26,7 +25,8 @@ const api = {
   onGameClosed: (callback) => {
     ipcRenderer.on('game-closed', (event, code) => callback(code))
   },
-  stopGame: () => ipcRenderer.invoke('stop-game')
+  stopGame: () => ipcRenderer.invoke('stop-game'),
+  updateDiscordRPC: (data) => ipcRenderer.invoke('update-discord-rpc', data)
 }
 
 if (process.contextIsolated) {
