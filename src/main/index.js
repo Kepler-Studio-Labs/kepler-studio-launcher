@@ -9,11 +9,12 @@ import unzipper from 'unzipper'
 import { getKeplerPath } from '../lib/path'
 import { bootstrapGame } from '../lib/bootstrap'
 import { getApiHost } from '../lib/api'
-import { useDiscordStore } from '../lib/discord'
-import isDev from 'electron-is-dev'
 import { autoUpdater } from 'electron-updater'
+import { DiscordRPCInstance } from '../lib/discord'
 
 let gameProcess = null // Stocke la référence du processus lanc
+
+const isDev = !app.isPackaged
 
 if (isDev) {
   console.log('dev build, skipping update')
@@ -23,7 +24,7 @@ if (isDev) {
   )
 }
 
-useDiscordStore.getState().init()
+const DiscordRPC = new DiscordRPCInstance()
 
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
@@ -87,7 +88,7 @@ app.whenReady().then(() => {
 
   let win = createWindow()
 
-  setTimeout(() => {
+  win.webContents.once('did-finish-load', () => {
     if (!isDev) {
       autoUpdater.checkForUpdates()
 
@@ -105,9 +106,10 @@ app.whenReady().then(() => {
         win.webContents.send('update-progress', progress.percent)
       })
     } else {
-      win.webContents.send('update-available')
+      // uncomment to test update UI
+      // win.webContents.send('update-available')
     }
-  }, 3000)
+  })
 
   ipcMain.on('close', () => app.quit())
   ipcMain.on('minimize', () => win.minimize())
@@ -199,7 +201,7 @@ app.whenReady().then(() => {
     }
   })
   ipcMain.handle('update-discord-rpc', (event, data) => {
-    useDiscordStore.getState().define(data)
+    DiscordRPC.update(data)
   })
 
   app.on('activate', function () {
