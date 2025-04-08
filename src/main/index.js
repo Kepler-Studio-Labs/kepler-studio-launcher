@@ -16,9 +16,9 @@ let gameProcess = null // Stocke la référence du processus lanc
 
 const isDev = !app.isPackaged
 
-autoUpdater.setFeedURL(
-  `https://update.electronjs.org/Kepler-Studio-Labs/kepler-studio-launcher/win32-x64/${app.getVersion()}`
-)
+//autoUpdater.setFeedURL(
+//  `https://update.electronjs.org/Kepler-Studio-Labs/kepler-studio-launcher/win32-x64/${app.getVersion()}`
+//)
 
 const DiscordRPC = new DiscordRPCInstance()
 
