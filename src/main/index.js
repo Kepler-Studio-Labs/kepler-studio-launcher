@@ -9,6 +9,8 @@ import unzipper from 'unzipper'
 import { getKeplerPath } from '../lib/path'
 import { bootstrapGame } from '../lib/bootstrap'
 import { getApiHost } from '../lib/api'
+import { updateElectronApp } from 'update-electron-app'
+updateElectronApp()
 
 let gameProcess = null // Stocke la référence du processus lanc
 

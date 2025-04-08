@@ -23,7 +23,7 @@ nsis:
   oneClick: false
   perMachine: false
 npmRebuild: false
-publish: { provider: github, releaseType: draft, vPrefixedTagName: true }
+publish: { provider: github, protocol: https }
 forceCodeSigning: false
 protocols:
   - name: Kepler Studio Launcher
