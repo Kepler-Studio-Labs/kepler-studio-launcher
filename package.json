@@ -1,10 +1,10 @@
 {
   "name": "kepler-studio-launcher",
-  "version": "1.0.1",
-  "description": "An Electron application with React",
+  "version": "1.0.2",
+  "description": "Kepler Studio Game Launcher",
   "main": "./out/main/index.js",
-  "author": "example.com",
-  "homepage": "https://electron-vite.org",
+  "author": "kepler-studio.com",
+  "homepage": "https://gaming.kepler-studio.com",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache .",

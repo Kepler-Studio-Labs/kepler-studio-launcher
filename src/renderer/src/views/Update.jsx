@@ -69,7 +69,7 @@ export function Update() {
                     disabled={clicked}
                   >
                     {clicked && <Loader />}
-                    {clicked ? 'Installation' : 'Redémarrer et installer'}
+                    {clicked ? 'Installation' : "Procéder à l'installation"}
                   </button>
                 )}
               </div>
