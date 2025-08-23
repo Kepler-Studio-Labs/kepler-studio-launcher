@@ -11,6 +11,7 @@ import { bootstrapGame } from '../lib/bootstrap'
 import { getApiHost } from '../lib/api'
 import { autoUpdater } from 'electron-updater'
 import { DiscordRPCInstance } from '../lib/discord'
+import semver from 'semver'
 
 let gameProcess = null // Stocke la référence du processus lanc
 
@@ -144,20 +145,28 @@ app.whenReady().then(() => {
   ipcMain.handle('unzip-downloaded-files', async () => {
     try {
       const downloadsDir = path.join(getKeplerPath(), 'tmp')
+
       const unzipDir = path.join(getKeplerPath(), 'games', 'cobblemon')
       if (!fs.existsSync(unzipDir)) {
         fs.mkdirSync(unzipDir, { recursive: true })
       }
-      const files = fs.readdirSync(downloadsDir)
+
+      let files = fs.readdirSync(downloadsDir).filter((file) => file.endsWith('.zip'))
+
+      files.sort((a, b) => {
+        const versionA = a.replace('.zip', '')
+        const versionB = b.replace('.zip', '')
+        return semver.compare(versionA, versionB)
+      })
+
       for (const file of files) {
-        if (file.endsWith('.zip')) {
-          const filePath = path.join(downloadsDir, file)
-          await fs
-            .createReadStream(filePath)
-            .pipe(unzipper.Extract({ path: unzipDir }))
-            .promise()
-        }
+        const filePath = path.join(downloadsDir, file)
+        await fs
+          .createReadStream(filePath)
+          .pipe(unzipper.Extract({ path: unzipDir }))
+          .promise()
       }
+
       return { success: true, unzipDir }
     } catch (error) {
       console.error('Erreur lors de la décompression des fichiers :', error)

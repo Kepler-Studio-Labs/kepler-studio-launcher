@@ -7,7 +7,7 @@ import { spawn } from 'child_process'
 function parseCommandLine(str) {
   const authData = getAuthData()
   return str
-    .replaceAll('{java}', resolve(getJavaDir(), 'java.exe'))
+    .replaceAll('{java}', resolve(getJavaDir(), 'javaw.exe'))
     .replaceAll('{xmx}', '-Xmx8G')
     .replaceAll('{path}', getCobblemonDir())
     .replaceAll('{uuid}', authData.id)
