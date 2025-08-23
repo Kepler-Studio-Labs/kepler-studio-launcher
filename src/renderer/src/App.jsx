@@ -7,6 +7,7 @@ import Profile from './views/Profile'
 import Settings from './views/Settings'
 import { useEffect, useState } from 'react'
 import { Update } from './views/Update'
+import Survie from './views/Survie'
 
 function App() {
   const [isUpdate, setIsUpdate] = useState(false)
@@ -30,6 +31,7 @@ function App() {
           <Route path="/" element={<Auth />} />
           <Route path="/main" element={<Main />} />
           <Route path="/cobblemon" element={<Cobblemon />} />
+          <Route path="/survie" element={<Survie />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
         </Routes>

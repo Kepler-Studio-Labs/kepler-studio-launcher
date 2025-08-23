@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import icon from '../assets/icon.png'
-import { UnplugIcon } from 'lucide-react'
+import { BeefIcon, UnplugIcon } from 'lucide-react'
 import { UserIcon } from 'lucide-react'
 import { HouseIcon } from 'lucide-react'
 import { SettingsIcon } from 'lucide-react'
@@ -77,6 +77,22 @@ function AppSidebar() {
             <BoxIcon className="w-6 h-6" />
             <span className="hidden absolute flex items-center justify-center left-4 right-0 top-0 bottom-0 scale-0 group-hover:scale-100 font-medium transition-all duration-300">
               Cobblemon
+            </span>
+          </button>
+          <button
+            className={clsx(
+              'p-4 w-full flex items-center gap-2 cursor-pointer relative',
+              location.pathname === '/survie'
+                ? 'bg-violet-700'
+                : 'bg-neutral-800 hover:bg-white hover:text-black'
+            )}
+            onClick={() => {
+              navigate('/survie')
+            }}
+          >
+            <BeefIcon className="w-6 h-6" />
+            <span className="hidden absolute flex items-center justify-center left-4 right-0 top-0 bottom-0 scale-0 group-hover:scale-100 font-medium transition-all duration-300">
+              Survie
             </span>
           </button>
           <button

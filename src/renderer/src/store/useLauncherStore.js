@@ -11,6 +11,8 @@ export const useLauncherStore = create((set, get) => ({
   fetchVersions: async () => {
     const installed = await window.api.getInstalledVersion()
     const latest = await window.api.getLatestVersion()
+    console.log('installed', installed)
+    console.log('latest', latest)
     set({
       installedVersion: installed,
       latestVersion: latest,

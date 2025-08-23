@@ -167,7 +167,7 @@ app.whenReady().then(() => {
   ipcMain.handle('clear-temporary-files', async () => {
     try {
       const downloadsDir = path.join(getKeplerPath(), 'tmp')
-      fs.rmdirSync(downloadsDir)
+      fs.rmSync(downloadsDir, { recursive: true })
       return { success: true }
     } catch (error) {
       console.error('Erreur lors de la suppression des fichiers temporaires :', error)

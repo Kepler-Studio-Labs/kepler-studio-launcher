@@ -1,7 +1,7 @@
 import AppSidebar from '../components/app-sidebar'
 import { GameButton } from '../components/game-button'
 import Header from '../components/header'
-import { SettingsIcon } from 'lucide-react'
+import { HardDriveIcon, SettingsIcon } from 'lucide-react'
 import darkrai from '../assets/darkrai.png'
 
 function Cobblemon() {
@@ -23,8 +23,18 @@ function Cobblemon() {
                 l’académie.
               </p>
               <div className="flex items-center gap-2">
-                <GameButton />
-                <button className="p-2 px-1 rounded-full bg-white/25 hover:bg-white/10 text-transparent font-semibold flex items-center gap-2 cursor-pointer">
+                <button
+                  className="p-2 px-6 rounded-full bg-violet-500 hover:bg-violet-700 disabled:bg-white/25 text-white disabled:text-neutral-500 font-semibold flex items-center gap-2 cursor-pointer"
+                  disabled
+                >
+                  <>
+                    <HardDriveIcon /> Installer
+                  </>
+                </button>
+                <button
+                  className="p-2 px-1 rounded-full bg-white/25 hover:bg-white/10 text-transparent font-semibold flex items-center gap-2 cursor-pointer"
+                  disabled
+                >
                   . <SettingsIcon className="w-4 h-4 text-white" strokeWidth={2} /> .
                 </button>
               </div>
