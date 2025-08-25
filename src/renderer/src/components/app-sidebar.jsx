@@ -6,6 +6,7 @@ import { HouseIcon } from 'lucide-react'
 import { SettingsIcon } from 'lucide-react'
 import clsx from 'clsx'
 import { BoxIcon } from 'lucide-react'
+import { useState } from 'react'
 
 function AppSidebar() {
   const navigate = useNavigate()
@@ -16,8 +17,23 @@ function AppSidebar() {
     navigate('/')
   }
 
+  const handleMouseLeave = (e) => {
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      setIsOpen(false)
+    }
+  }
+
+  const [isOpen, setIsOpen] = useState(false)
+
   return (
-    <div className="h-full w-22 p-4 py-12 bg-neutral-950 flex flex-col items-center justify-between transition-all duration-300 group">
+    <div
+      className={clsx(
+        'h-full p-4 py-12 bg-neutral-950 flex flex-col items-center justify-between transition-all duration-300',
+        isOpen ? 'w-72' : 'w-22'
+      )}
+      onMouseEnter={() => setIsOpen(true)}
+      onMouseLeave={handleMouseLeave}
+    >
       <img
         src={icon}
         alt="kepler icon"
@@ -26,22 +42,20 @@ function AppSidebar() {
       <div className="w-full space-y-6">
         <button
           className={clsx(
-            'rounded-full p-4 w-full flex items-center gap-2 cursor-pointer relative group/item',
+            'rounded-full p-4 w-full flex flex-nowrap items-center gap-3 cursor-pointer relative group/item',
             location.pathname === '/profile'
               ? 'bg-violet-700'
               : 'bg-neutral-800 hover:bg-white hover:text-black'
           )}
           onClick={() => navigate('/profile')}
         >
-          <UserIcon className="w-6 h-6" />
-          <span className="hidden absolute flex items-center justify-center left-4 right-0 top-0 bottom-0 scale-0 group-hover:scale-100 font-medium transition-all duration-300">
-            Profil
-          </span>
+          <UserIcon className="w-6 h-6 shrink-0" />
+          {isOpen && <span className="z-20 font-medium text-from-left-animation">Profil</span>}
         </button>
         <div className="w-full">
           <button
             className={clsx(
-              'rounded-full p-4 w-full flex items-center gap-2 cursor-pointer relative group/item',
+              'rounded-full p-4 w-full flex flex-nowrap items-center gap-3 cursor-pointer relative group/item',
               location.pathname === '/main'
                 ? 'bg-violet-700'
                 : 'bg-neutral-800 hover:bg-white hover:text-black'
@@ -58,14 +72,12 @@ function AppSidebar() {
                   : 'bg-neutral-800 group-hover/item:bg-white group-hover/item:text-black'
               )}
             ></span>
-            <HouseIcon className="w-6 h-6 z-10" />
-            <span className="hidden absolute flex items-center justify-center left-4 right-0 top-0 bottom-0 scale-0 group-hover:scale-100 font-medium transition-all duration-300 z-10">
-              Accueil
-            </span>
+            <HouseIcon className="w-6 h-6 shrink-0 z-10" />
+            {isOpen && <span className="z-20 font-medium text-from-left-animation">Accueil</span>}
           </button>
           <button
             className={clsx(
-              'p-4 w-full flex items-center gap-2 cursor-pointer relative',
+              'p-4 w-full flex items-center gap-3 cursor-pointer relative',
               location.pathname === '/cobblemon'
                 ? 'bg-violet-700'
                 : 'bg-neutral-800 hover:bg-white hover:text-black'
@@ -74,14 +86,12 @@ function AppSidebar() {
               navigate('/cobblemon')
             }}
           >
-            <BoxIcon className="w-6 h-6" />
-            <span className="hidden absolute flex items-center justify-center left-4 right-0 top-0 bottom-0 scale-0 group-hover:scale-100 font-medium transition-all duration-300">
-              Cobblemon
-            </span>
+            <BoxIcon className="w-6 h-6 shrink-0" />
+            {isOpen && <span className="z-20 font-medium text-from-left-animation">Cobblemon</span>}
           </button>
           <button
             className={clsx(
-              'p-4 w-full flex items-center gap-2 cursor-pointer relative',
+              'p-4 w-full flex items-center gap-3 cursor-pointer relative',
               location.pathname === '/survie'
                 ? 'bg-violet-700'
                 : 'bg-neutral-800 hover:bg-white hover:text-black'
@@ -90,14 +100,12 @@ function AppSidebar() {
               navigate('/survie')
             }}
           >
-            <BeefIcon className="w-6 h-6" />
-            <span className="hidden absolute flex items-center justify-center left-4 right-0 top-0 bottom-0 scale-0 group-hover:scale-100 font-medium transition-all duration-300">
-              Survie
-            </span>
+            <BeefIcon className="w-6 h-6 shrink-0" />
+            {isOpen && <span className="z-20 font-medium text-from-left-animation">Survie</span>}
           </button>
           <button
             className={clsx(
-              'rounded-full p-4 w-full flex items-center gap-2 cursor-pointer relative group/item',
+              'rounded-full p-4 w-full flex flex-nowrap items-center gap-3 cursor-pointer relative group/item',
               location.pathname === '/settings'
                 ? 'bg-violet-700'
                 : 'bg-neutral-800 hover:bg-white hover:text-black'
@@ -114,21 +122,23 @@ function AppSidebar() {
                   : 'bg-neutral-800 group-hover/item:bg-white group-hover/item:text-black'
               )}
             ></span>
-            <SettingsIcon className="w-6 h-6 z-10" />
-            <span className="hidden absolute flex items-center justify-center left-4 right-0 top-0 bottom-0 scale-0 group-hover:scale-100 font-medium transition-all duration-300 z-10">
-              Paramètres
-            </span>
+            <SettingsIcon className="w-6 h-6 shrink-0 z-10" />
+            {isOpen && (
+              <span className="z-20 font-medium text-from-left-animation">Paramètres</span>
+            )}
           </button>
         </div>
       </div>
       <button
-        className="bg-neutral-800 hover:bg-white hover:text-black rounded-full p-4 w-full flex items-center gap-2 cursor-pointer relative"
+        className="bg-neutral-800 hover:bg-white hover:text-black rounded-full p-4 w-full flex flex-nowrap items-center gap-3 cursor-pointer relative"
         onClick={handleDisconnect}
       >
-        <UnplugIcon className="w-6 h-6" />
-        <span className="hidden absolute flex items-center justify-center left-6 right-0 top-0 bottom-0 scale-0 group-hover:scale-100 font-medium transition-all duration-300">
-          Se déconnecter
-        </span>
+        <UnplugIcon className="w-6 h-6 shrink-0" />
+        {isOpen && (
+          <span className="z-20 font-medium text-nowrap text-from-left-animation">
+            Se déconnecter
+          </span>
+        )}
       </button>
     </div>
   )

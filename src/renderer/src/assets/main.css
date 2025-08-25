@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   --font-press-start: 'Press Start 2P', system-ui;
@@ -14,4 +14,20 @@
 
 #titlebar button {
   -webkit-app-region: no-drag;
+}
+
+.text-from-left-animation {
+  animation: text-from-left-animation 0.2s linear forwards;
+}
+
+@keyframes text-from-left-animation {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
