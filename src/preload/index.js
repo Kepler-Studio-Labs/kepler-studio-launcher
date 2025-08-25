@@ -30,13 +30,15 @@ const api = {
   unzipDownloadedFiles: () => ipcRenderer.invoke('unzip-downloaded-files'),
   clearTemporaryFiles: () => ipcRenderer.invoke('clear-temporary-files'),
   saveVersionFile: (version) => ipcRenderer.invoke('save-version-file', version),
+  refreshMcToken: () => ipcRenderer.invoke('refresh-mc-token'),
   bootstrap: () => ipcRenderer.invoke('bootstrap'),
   onGameClosed: (callback) => {
     ipcRenderer.on('game-closed', (event, code) => callback(code))
   },
   stopGame: () => ipcRenderer.invoke('stop-game'),
   updateDiscordRPC: (data) => ipcRenderer.invoke('update-discord-rpc', data),
-  installUpdate: () => ipcRenderer.invoke('install-update')
+  installUpdate: () => ipcRenderer.invoke('install-update'),
+  openGameSettingsTab: (gameId) => ipcRenderer.invoke('open-game-settings-tab', gameId)
 }
 
 if (process.contextIsolated) {

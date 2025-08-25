@@ -69,6 +69,13 @@ export const useLauncherStore = create((set, get) => ({
     }
   },
   bootstrap: async () => {
+    set({ state: 'refreshing' })
+    const authSuccess = await window.api.refreshMcToken()
+    if (!authSuccess) {
+      set({ state: 'idle' })
+      alert("Erreur lors de l'authentification")
+      return
+    }
     set({ state: 'ingame' })
     window.api.updateDiscordRPC({
       details: 'Cobblemon: New Era',

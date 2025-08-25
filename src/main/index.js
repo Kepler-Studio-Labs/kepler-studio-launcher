@@ -2,7 +2,7 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { disconnect, getAuthData, saveAuthData } from '../lib/auth'
+import { disconnect, getAuthData, refreshMcToken, saveAuthData } from '../lib/auth'
 import { getInstalledVersion, getLatestVersion, saveVersionFile } from '../lib/update'
 import fs from 'fs'
 import unzipper from 'unzipper'
@@ -99,6 +99,45 @@ function createWindow() {
   })
 
   return mainWindow
+}
+
+function createGameSettingsWindow() {
+  const gameSettingsWindow = new BrowserWindow({
+    width: 390,
+    height: 620,
+    show: false,
+    autoHideMenuBar: true,
+    resizable: false,
+    titleBarStyle: 'hidden',
+    ...(process.platform === 'linux' ? { icon } : {}),
+    webPreferences: {
+      preload: join(__dirname, '../preload/g-settings.js'),
+      sandbox: false,
+      contextIsolation: true,
+      nodeIntegrationInWorker: true
+    }
+  })
+
+  gameSettingsWindow.webContents.setWindowOpenHandler((details) => {
+    shell.openExternal(details.url)
+    return { action: 'deny' }
+  })
+
+  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+    gameSettingsWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
+  } else {
+    gameSettingsWindow.loadFile(join(__dirname, '../renderer/g-settings.html'))
+  }
+
+  gameSettingsWindow.webContents.on('before-input-event', (_, input) => {
+    if (input.type === 'keyDown' && input.key === 'F12') {
+      gameSettingsWindow.webContents.isDevToolsOpened()
+        ? gameSettingsWindow.webContents.closeDevTools()
+        : gameSettingsWindow.webContents.openDevTools({ mode: 'left' })
+    }
+  })
+
+  return gameSettingsWindow
 }
 
 app.whenReady().then(() => {
@@ -198,6 +237,17 @@ app.whenReady().then(() => {
     }
     return 'Game started'
   })
+  ipcMain.handle('refresh-mc-token', async () => {
+    const authData = getAuthData()
+    if (!authData) return false
+    const res = await refreshMcToken(authData.mcToken, authData.refreshToken)
+    if (res.success) {
+      if (res.data) saveAuthData(res.data)
+      return true
+    } else {
+      return false
+    }
+  })
   ipcMain.handle('stop-game', async () => {
     if (gameProcess && !gameProcess.killed) {
       gameProcess.kill()
@@ -209,6 +259,13 @@ app.whenReady().then(() => {
   })
   ipcMain.handle('update-discord-rpc', (event, data) => {
     DiscordRPC.update(data)
+  })
+  ipcMain.handle('open-game-settings-tab', (event, data) => {
+    return
+    const gameId = data
+    const settingsWin = createGameSettingsWindow()
+    settingsWin.show()
+    settingsWin.webContents.send('open-game-settings-tab', gameId)
   })
 
   app.on('activate', function () {

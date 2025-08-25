@@ -1,4 +1,4 @@
-import { CloudDownloadIcon } from 'lucide-react'
+import { CloudDownloadIcon, FingerprintIcon } from 'lucide-react'
 import { useLauncherStore } from '../store/useLauncherStore'
 import { useEffect } from 'react'
 import { Loader } from './loader'
@@ -19,10 +19,12 @@ export function LauncherState() {
       {state === 'ingame' && <GamepadIcon />}
       {state === 'downloading' && <CloudDownloadIcon />}
       {state === 'unzip' && <FileArchiveIcon />}
+      {state === 'refreshing' && <FingerprintIcon />}
       <div className="flex flex-col items-center">
         <p className="text-sm capitalize font-semibold">
           {{
             idle: 'idle',
+            refreshing: 'Authentification',
             ready: 'ready',
             downloading: 'Téléchargement',
             unzip: 'Extraction',
