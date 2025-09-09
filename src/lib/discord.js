@@ -2,20 +2,40 @@ import DiscordRPC from 'discord-rpc'
 
 const clientId = '1359083970154725525'
 
-const defaultActivity = {
-  details: 'Menu principal',
-  state: null,
-  largeImageKey: 'keplerbg',
-  largeImageText: 'Kepler Studio Launcher',
-  smallImageKey: null,
-  smallImageText: null,
-  startTimestamp: new Date()
+export const RPC_PRESETS = {
+  MAIN_MENU: {
+    details: 'Menu principal',
+    state: null,
+    largeImageKey: 'keplerbg',
+    largeImageText: 'Kepler Studio Launcher',
+    smallImageKey: 'idle',
+    smallImageText: 'Menu principal',
+    startTimestamp: new Date()
+  },
+  COBBLEMON_PLAYING: {
+    details: 'Cobblemon: New Era',
+    state: 'En jeu',
+    largeImageKey: 'pokeball',
+    largeImageText: 'Cobblemon: New Era',
+    smallImageKey: 'keplerbg',
+    smallImageText: 'En jeu',
+    startTimestamp: new Date()
+  },
+  SURVIE_COPAINS_PLAYING: {
+    details: 'La survie des copains',
+    state: 'En jeu',
+    largeImageKey: 'endereye',
+    largeImageText: 'La survie des copains',
+    smallImageKey: 'keplerbg',
+    smallImageText: 'En jeu',
+    startTimestamp: new Date()
+  }
 }
 
 export class DiscordRPCInstance {
   constructor() {
     this.data = {
-      ...defaultActivity
+      ...RPC_PRESETS.MAIN_MENU
     }
 
     DiscordRPC.register(clientId)

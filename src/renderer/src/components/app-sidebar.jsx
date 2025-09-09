@@ -18,8 +18,12 @@ function AppSidebar() {
   }
 
   const handleMouseLeave = (e) => {
-    if (!e.currentTarget.contains(e.relatedTarget)) {
-      setIsOpen(false)
+    try {
+      if (e.currentTarget && e.relatedTarget && !e.currentTarget.contains(e.relatedTarget)) {
+        setIsOpen(false)
+      }
+    } catch {
+      // do nothing
     }
   }
 

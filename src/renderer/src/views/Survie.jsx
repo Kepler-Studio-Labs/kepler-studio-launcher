@@ -20,10 +20,10 @@ function Survie() {
                 Mais c&apos;est aussi la survie de Garfield.
               </p>
               <div className="flex items-center gap-2">
-                <GameButton />
+                <GameButton gameId="survie" />
                 <button
                   className="p-2 px-1 rounded-full bg-white/25 hover:bg-white/10 text-transparent font-semibold flex items-center gap-2 cursor-pointer"
-                  onClick={() => window.api.openGameSettingsTab('mc-survie-potos')}
+                  onClick={() => alert('Impossible')}
                 >
                   . <SettingsIcon className="w-4 h-4 text-white" strokeWidth={2} /> .
                 </button>

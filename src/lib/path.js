@@ -29,8 +29,23 @@ export function getCobblemonDir() {
   return p
 }
 
-export function getJavaDir() {
-  const p = path.join(getKeplerPath(), 'games', 'cobblemon', 'runtime', 'bin')
+export function getGameDir(gameId, isMinecraftInstance = false) {
+  const p = path.join(
+    getKeplerPath(),
+    'keplerapps',
+    isMinecraftInstance ? 'minecraft' : 'common',
+    gameId
+  )
+  if (!fs.existsSync(p))
+    fs.mkdirSync(p, {
+      recursive: true
+    })
+  return p
+}
+
+export function getJavaDir(gameId) {
+  // isMinecraftInstance is true because java = 100% mc
+  const p = path.join(getGameDir(gameId, true), 'runtime', 'bin')
   if (!fs.existsSync(p))
     fs.mkdirSync(p, {
       recursive: true

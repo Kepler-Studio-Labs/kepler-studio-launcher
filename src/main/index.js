@@ -6,12 +6,13 @@ import { disconnect, getAuthData, refreshMcToken, saveAuthData } from '../lib/au
 import { getInstalledVersion, getLatestVersion, saveVersionFile } from '../lib/update'
 import fs from 'fs'
 import unzipper from 'unzipper'
-import { getKeplerPath } from '../lib/path'
+import { getGameDir, getKeplerPath } from '../lib/path'
 import { bootstrapGame } from '../lib/bootstrap'
 import { getApiHost } from '../lib/api'
 import { autoUpdater } from 'electron-updater'
-import { DiscordRPCInstance } from '../lib/discord'
+import { DiscordRPCInstance, RPC_PRESETS } from '../lib/discord'
 import semver from 'semver'
+import { games } from '../lib/games'
 
 let gameProcess = null // Stocke la référence du processus lanc
 
@@ -101,45 +102,6 @@ function createWindow() {
   return mainWindow
 }
 
-function createGameSettingsWindow() {
-  const gameSettingsWindow = new BrowserWindow({
-    width: 390,
-    height: 620,
-    show: false,
-    autoHideMenuBar: true,
-    resizable: false,
-    titleBarStyle: 'hidden',
-    ...(process.platform === 'linux' ? { icon } : {}),
-    webPreferences: {
-      preload: join(__dirname, '../preload/g-settings.js'),
-      sandbox: false,
-      contextIsolation: true,
-      nodeIntegrationInWorker: true
-    }
-  })
-
-  gameSettingsWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url)
-    return { action: 'deny' }
-  })
-
-  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    gameSettingsWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
-  } else {
-    gameSettingsWindow.loadFile(join(__dirname, '../renderer/g-settings.html'))
-  }
-
-  gameSettingsWindow.webContents.on('before-input-event', (_, input) => {
-    if (input.type === 'keyDown' && input.key === 'F12') {
-      gameSettingsWindow.webContents.isDevToolsOpened()
-        ? gameSettingsWindow.webContents.closeDevTools()
-        : gameSettingsWindow.webContents.openDevTools({ mode: 'left' })
-    }
-  })
-
-  return gameSettingsWindow
-}
-
 app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.electron')
 
@@ -162,8 +124,9 @@ app.whenReady().then(() => {
   ipcMain.handle('get-app-version', async () => {
     return app.getVersion()
   })
-  ipcMain.handle('get-installed-version', () => getInstalledVersion())
-  ipcMain.handle('get-latest-version', async () => await getLatestVersion())
+  ipcMain.handle('get-installed-version', (event, game) => getInstalledVersion(game))
+  ipcMain.handle('get-latest-version', async (event, game) => await getLatestVersion(game))
+  ipcMain.handle('get-game-meta', async (event, game) => games[game])
   ipcMain.handle('get-api-host', () => getApiHost())
   ipcMain.handle('save-downloaded-file', async (event, { fileName, fileData }) => {
     try {
@@ -181,11 +144,11 @@ app.whenReady().then(() => {
       return { success: false, error: error.message }
     }
   })
-  ipcMain.handle('unzip-downloaded-files', async () => {
+  ipcMain.handle('unzip-downloaded-files', async (event, gameId) => {
     try {
       const downloadsDir = path.join(getKeplerPath(), 'tmp')
 
-      const unzipDir = path.join(getKeplerPath(), 'games', 'cobblemon')
+      const unzipDir = path.join(getGameDir(gameId, true))
       if (!fs.existsSync(unzipDir)) {
         fs.mkdirSync(unzipDir, { recursive: true })
       }
@@ -222,11 +185,11 @@ app.whenReady().then(() => {
       return { success: false, error: error.message }
     }
   })
-  ipcMain.handle('save-version-file', (event, version) => saveVersionFile(version))
-  ipcMain.handle('bootstrap', async () => {
+  ipcMain.handle('save-version-file', (event, gameId, version) => saveVersionFile(gameId, version))
+  ipcMain.handle('bootstrap', async (event, gameId) => {
     // Lance le jeu seulement si ce n'est pas déjà en cours
     if (!gameProcess) {
-      gameProcess = bootstrapGame()
+      gameProcess = bootstrapGame(gameId)
       gameProcess.on('close', (code) => {
         win.webContents.send('game-closed', code)
         gameProcess = null
@@ -257,15 +220,10 @@ app.whenReady().then(() => {
       return 'No game running'
     }
   })
-  ipcMain.handle('update-discord-rpc', (event, data) => {
-    DiscordRPC.update(data)
-  })
-  ipcMain.handle('open-game-settings-tab', (event, data) => {
-    return
-    const gameId = data
-    const settingsWin = createGameSettingsWindow()
-    settingsWin.show()
-    settingsWin.webContents.send('open-game-settings-tab', gameId)
+  ipcMain.handle('update-discord-rpc', (event, preset) => {
+    const presetData = RPC_PRESETS[preset]
+    if (!presetData) return console.error('Preset not found for discord rpc:', preset)
+    DiscordRPC.update(presetData)
   })
 
   app.on('activate', function () {

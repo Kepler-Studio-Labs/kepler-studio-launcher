@@ -3,23 +3,24 @@ import { useLauncherStore } from '../store/useLauncherStore'
 import { CloudDownloadIcon } from 'lucide-react'
 import { useEffect } from 'react'
 import { GamepadIcon } from 'lucide-react'
+import PropTypes from 'prop-types'
 
-export const GameButton = () => {
-  const { installedVersion, needsUpdate, fetchVersions, startDownload, state, bootstrap } =
+export const GameButton = ({ gameId }) => {
+  const { installedVersions, needsUpdate, fetchVersions, startDownload, state, bootstrap } =
     useLauncherStore()
 
   useEffect(() => {
-    fetchVersions()
-  }, [fetchVersions])
+    fetchVersions(gameId)
+  }, [fetchVersions, gameId])
 
   const handleClick = () => {
-    if (installedVersion === null) {
-      startDownload()
-    } else if (installedVersion !== null && needsUpdate) {
-      startDownload()
-    } else if (installedVersion !== null && !needsUpdate && state !== 'ingame') {
-      bootstrap()
-    } else if (installedVersion !== null && !needsUpdate && state === 'ingame') {
+    if (installedVersions[gameId] === null) {
+      startDownload(gameId)
+    } else if (installedVersions[gameId] !== null && needsUpdate[gameId]) {
+      startDownload(gameId)
+    } else if (installedVersions[gameId] !== null && !needsUpdate[gameId] && state !== 'ingame') {
+      bootstrap(gameId)
+    } else if (installedVersions[gameId] !== null && !needsUpdate[gameId] && state === 'ingame') {
       // stopGame()
     } else {
       alert('erreur')
@@ -32,29 +33,33 @@ export const GameButton = () => {
       onClick={handleClick}
       disabled={!['idle', 'ready'].includes(state)}
     >
-      {installedVersion === null && (
+      {installedVersions[gameId] === null && (
         <>
           <HardDriveIcon /> Installer
         </>
       )}
 
-      {installedVersion !== null && needsUpdate && (
+      {installedVersions[gameId] !== null && needsUpdate[gameId] && (
         <>
           <CloudDownloadIcon /> Mettre à jour
         </>
       )}
 
-      {installedVersion !== null && !needsUpdate && state !== 'ingame' && (
+      {installedVersions[gameId] !== null && !needsUpdate[gameId] && state !== 'ingame' && (
         <>
           <GamepadIcon /> Jouer
         </>
       )}
 
-      {installedVersion !== null && !needsUpdate && state === 'ingame' && (
+      {installedVersions[gameId] !== null && !needsUpdate[gameId] && state === 'ingame' && (
         <>
           <GamepadIcon className="w-4 h-4" /> En cours d&apos;exécution
         </>
       )}
     </button>
   )
+}
+
+GameButton.propTypes = {
+  gameId: PropTypes.string.isRequired
 }

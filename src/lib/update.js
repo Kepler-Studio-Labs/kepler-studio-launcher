@@ -1,24 +1,28 @@
 import { app } from 'electron'
 import { getApiHost } from './api'
+import { games } from './games'
 
 const fs = require('fs')
 const path = require('path')
 
-export const getInstalledVersion = () => {
-  const versionFilePath = path.join(app.getPath('appData'), '.kepler', 'installed_version.txt')
+export const getInstalledVersion = (game) => {
+  const versionFilePath = path.join(app.getPath('appData'), '.kepler', `${game}-version.txt`)
 
   try {
     if (!fs.existsSync(versionFilePath)) return null // Fichier non trouvé
-    return fs.readFileSync(versionFilePath, 'utf-8').trim()
+    return fs.readFileSync(versionFilePath, 'utf-8')
   } catch (error) {
     console.error('Erreur lors de la lecture de la version installée :', error)
     return null
   }
 }
 
-export const getLatestVersion = async () => {
+export const getLatestVersion = async (game) => {
   try {
-    const res = await fetch(`${getApiHost()}/update/game/version`)
+    const gameMeta = games[game]
+    if (!gameMeta) return null
+
+    const res = await fetch(`${getApiHost()}/update/game/${gameMeta.dbId}/version`)
 
     if (!res.ok) {
       const text = await res.text()
@@ -33,8 +37,9 @@ export const getLatestVersion = async () => {
   }
 }
 
-export const saveVersionFile = (version) => {
-  const versionFilePath = path.join(app.getPath('appData'), '.kepler', 'installed_version.txt')
+export const saveVersionFile = (game, version) => {
+  console.log('v', game, version)
+  const versionFilePath = path.join(app.getPath('appData'), '.kepler', `${game}-version.txt`)
   try {
     if (fs.existsSync(versionFilePath)) fs.rmSync(versionFilePath)
     fs.writeFileSync(versionFilePath, version)

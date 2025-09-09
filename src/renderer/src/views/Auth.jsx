@@ -21,8 +21,6 @@ function Auth() {
 
       const json = await handshake.json().catch(() => setTimeout(doHandshake, 2500))
 
-      console.log(json)
-
       if (json.success) {
         setIsUp(true)
         return setTimeout(doHandshake, 15000)

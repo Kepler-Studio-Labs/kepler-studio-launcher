@@ -1,12 +1,11 @@
 // downloadWorker.js
 
 self.onmessage = async function (e) {
-  const { version, apiUrl } = e.data
-
-  console.log(version, apiUrl)
+  const { version, gameId, apiUrl } = e.data
 
   try {
-    const response = await fetch(`${apiUrl}/update/game/${version}`)
+    const finalUrl = `${apiUrl}/update/game/${gameId}/${version}`
+    const response = await fetch(finalUrl)
     if (!response.ok) throw new Error('Erreur lors de la récupération de la liste de fichiers')
     const json = await response.json()
     const files = json.updates

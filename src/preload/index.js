@@ -23,22 +23,22 @@ const api = {
   getAppVersion: async () => {
     return await ipcRenderer.invoke('get-app-version')
   },
-  getInstalledVersion: () => ipcRenderer.invoke('get-installed-version'),
-  getLatestVersion: () => ipcRenderer.invoke('get-latest-version'),
+  getInstalledVersion: (gameId) => ipcRenderer.invoke('get-installed-version', gameId),
+  getLatestVersion: (gameId) => ipcRenderer.invoke('get-latest-version', gameId),
+  getGameMeta: (gameId) => ipcRenderer.invoke('get-game-meta', gameId),
   getApiHost: () => ipcRenderer.invoke('get-api-host'),
   saveDownloadedFile: (data) => ipcRenderer.invoke('save-downloaded-file', data),
-  unzipDownloadedFiles: () => ipcRenderer.invoke('unzip-downloaded-files'),
+  unzipDownloadedFiles: (gameId) => ipcRenderer.invoke('unzip-downloaded-files', gameId),
   clearTemporaryFiles: () => ipcRenderer.invoke('clear-temporary-files'),
-  saveVersionFile: (version) => ipcRenderer.invoke('save-version-file', version),
+  saveVersionFile: (gameId, version) => ipcRenderer.invoke('save-version-file', gameId, version),
   refreshMcToken: () => ipcRenderer.invoke('refresh-mc-token'),
-  bootstrap: () => ipcRenderer.invoke('bootstrap'),
+  bootstrap: (gameId) => ipcRenderer.invoke('bootstrap', gameId),
   onGameClosed: (callback) => {
     ipcRenderer.on('game-closed', (event, code) => callback(code))
   },
   stopGame: () => ipcRenderer.invoke('stop-game'),
-  updateDiscordRPC: (data) => ipcRenderer.invoke('update-discord-rpc', data),
-  installUpdate: () => ipcRenderer.invoke('install-update'),
-  openGameSettingsTab: (gameId) => ipcRenderer.invoke('open-game-settings-tab', gameId)
+  updateDiscordRPC: (preset) => ipcRenderer.invoke('update-discord-rpc', preset),
+  installUpdate: () => ipcRenderer.invoke('install-update')
 }
 
 if (process.contextIsolated) {
