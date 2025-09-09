@@ -8,6 +8,7 @@ import Settings from './views/Settings'
 import { useEffect, useState } from 'react'
 import { Update } from './views/Update'
 import Survie from './views/Survie'
+import { SettingsOverlay } from './components/settings-overlay'
 
 function App() {
   const [isUpdate, setIsUpdate] = useState(false)
@@ -26,6 +27,7 @@ function App() {
   ) : (
     <div className="flex flex-col w-full min-h-screen max-h-screen h-screen bg-neutral-900 text-neutral-200 select-none *:select-none overflow-hidden">
       <MenuBar />
+      <SettingsOverlay />
       <Router>
         <Routes>
           <Route path="/" element={<Auth />} />

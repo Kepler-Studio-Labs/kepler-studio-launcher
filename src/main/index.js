@@ -156,8 +156,13 @@ app.whenReady().then(() => {
       let files = fs.readdirSync(downloadsDir).filter((file) => file.endsWith('.zip'))
 
       files.sort((a, b) => {
-        const versionA = a.replace('.zip', '')
-        const versionB = b.replace('.zip', '')
+        const versionRegex = /(\d+\.\d+\.\d+(-[\w.-]+)?)/ // match ex: 1.0.0 ou 1.0.0-beta
+        const matchA = a.match(versionRegex)
+        const matchB = b.match(versionRegex)
+
+        const versionA = matchA ? matchA[1] : '0.0.0'
+        const versionB = matchB ? matchB[1] : '0.0.0'
+
         return semver.compare(versionA, versionB)
       })
 

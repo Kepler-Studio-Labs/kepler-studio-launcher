@@ -5,6 +5,7 @@ self.onmessage = async function (e) {
 
   try {
     const finalUrl = `${apiUrl}/update/game/${gameId}/${version}`
+    console.log('finalUrl', finalUrl)
     const response = await fetch(finalUrl)
     if (!response.ok) throw new Error('Erreur lors de la récupération de la liste de fichiers')
     const json = await response.json()
@@ -15,7 +16,10 @@ self.onmessage = async function (e) {
 
     for (const file of files) {
       const res = await fetch(file.downloadUrl)
-      if (!res.ok) throw new Error('Erreur lors du téléchargement de ' + file.name)
+      if (!res.ok)
+        throw new Error(
+          'Erreur lors du téléchargement de ' + file.name + ', from:' + file.downloadUrl
+        )
 
       const reader = res.body.getReader()
       let done = false

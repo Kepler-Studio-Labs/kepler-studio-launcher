@@ -41,8 +41,6 @@ export const useLauncherStore = create((set, get) => ({
       return
     }
 
-    console.log('meta', gameMeta)
-
     const apiUrl = await window.api.getApiHost()
     const versionToDownload = get().installedVersions[gameId] || '0'
 
