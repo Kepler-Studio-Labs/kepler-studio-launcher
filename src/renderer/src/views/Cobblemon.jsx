@@ -23,7 +23,7 @@ function Cobblemon() {
                 l’académie.
               </p>
               <div className="flex items-center gap-2">
-                <GameButton gameId="cobblemon" />
+                <GameButton gameId="cobblemonLegacy" />
                 <button
                   className="p-2 px-1 rounded-full bg-white/25 hover:bg-white/10 text-transparent font-semibold flex items-center gap-2 cursor-pointer"
                   onClick={() => alert('Impossible')}

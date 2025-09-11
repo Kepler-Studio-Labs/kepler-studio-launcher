@@ -8,5 +8,10 @@ export const games = {
     id: 'cobblemon',
     dbId: 'COBBLEMON',
     name: 'Cobblemon: New Era'
+  },
+  cobblemonLegacy: {
+    id: 'cobblemonLegacy',
+    dbId: 'COBBLEMON_LEGACY',
+    name: 'Cobblemon: New Era (Legacy)'
   }
 }

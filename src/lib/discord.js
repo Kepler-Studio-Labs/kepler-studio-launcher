@@ -29,6 +29,15 @@ export const RPC_PRESETS = {
     smallImageKey: 'keplerbg',
     smallImageText: 'En jeu',
     startTimestamp: new Date()
+  },
+  COBBLEMON_LEGACY_PLAYING: {
+    details: 'Cobblemon: New Era (Legacy)',
+    state: 'En jeu',
+    largeImageKey: 'pokeball',
+    largeImageText: 'Cobblemon: New Era (Legacy)',
+    smallImageKey: 'keplerbg',
+    smallImageText: 'En jeu',
+    startTimestamp: new Date()
   }
 }
 
