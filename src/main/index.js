@@ -3,15 +3,13 @@ import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { disconnect, getAuthData, refreshMcToken, saveAuthData } from '../lib/auth'
-import { getInstalledVersion, getLatestVersion, saveVersionFile } from '../lib/update'
+import { applyUpdates, getInstalledVersion, getLatestVersion, saveVersionFile } from '../lib/update'
 import fs from 'fs'
-import unzipper from 'unzipper'
 import { getGameDir, getKeplerPath } from '../lib/path'
 import { bootstrapGame } from '../lib/bootstrap'
 import { getApiHost } from '../lib/api'
 import { autoUpdater } from 'electron-updater'
 import { DiscordRPCInstance, RPC_PRESETS } from '../lib/discord'
-import semver from 'semver'
 import { games } from '../lib/games'
 
 let gameProcess = null // Stocke la référence du processus lanc
@@ -124,11 +122,11 @@ app.whenReady().then(() => {
   ipcMain.handle('get-app-version', async () => {
     return app.getVersion()
   })
-  ipcMain.handle('get-installed-version', (event, game) => getInstalledVersion(game))
-  ipcMain.handle('get-latest-version', async (event, game) => await getLatestVersion(game))
-  ipcMain.handle('get-game-meta', async (event, game) => games[game])
+  ipcMain.handle('get-installed-version', (_, game) => getInstalledVersion(game))
+  ipcMain.handle('get-latest-version', async (_, game) => await getLatestVersion(game))
+  ipcMain.handle('get-game-meta', async (_, game) => games[game])
   ipcMain.handle('get-api-host', () => getApiHost())
-  ipcMain.handle('save-downloaded-file', async (event, { fileName, fileData }) => {
+  ipcMain.handle('save-downloaded-file', async (_, { fileName, fileData }) => {
     try {
       const downloadsDir = path.join(getKeplerPath(), 'tmp')
       if (!fs.existsSync(downloadsDir)) {
@@ -144,7 +142,7 @@ app.whenReady().then(() => {
       return { success: false, error: error.message }
     }
   })
-  ipcMain.handle('unzip-downloaded-files', async (event, gameId) => {
+  ipcMain.handle('unzip-downloaded-files', async (_, gameId) => {
     try {
       const downloadsDir = path.join(getKeplerPath(), 'tmp')
 
@@ -153,28 +151,9 @@ app.whenReady().then(() => {
         fs.mkdirSync(unzipDir, { recursive: true })
       }
 
-      let files = fs.readdirSync(downloadsDir).filter((file) => file.endsWith('.zip'))
+      const success = await applyUpdates(downloadsDir, unzipDir)
 
-      files.sort((a, b) => {
-        const versionRegex = /(\d+\.\d+\.\d+(-[\w.-]+)?)/ // match ex: 1.0.0 ou 1.0.0-beta
-        const matchA = a.match(versionRegex)
-        const matchB = b.match(versionRegex)
-
-        const versionA = matchA ? matchA[1] : '0.0.0'
-        const versionB = matchB ? matchB[1] : '0.0.0'
-
-        return semver.compare(versionA, versionB)
-      })
-
-      for (const file of files) {
-        const filePath = path.join(downloadsDir, file)
-        await fs
-          .createReadStream(filePath)
-          .pipe(unzipper.Extract({ path: unzipDir }))
-          .promise()
-      }
-
-      return { success: true, unzipDir }
+      return { success, unzipDir }
     } catch (error) {
       console.error('Erreur lors de la décompression des fichiers :', error)
       return { success: false, error: error.message }
@@ -190,8 +169,8 @@ app.whenReady().then(() => {
       return { success: false, error: error.message }
     }
   })
-  ipcMain.handle('save-version-file', (event, gameId, version) => saveVersionFile(gameId, version))
-  ipcMain.handle('bootstrap', async (event, gameId) => {
+  ipcMain.handle('save-version-file', (_, gameId, version) => saveVersionFile(gameId, version))
+  ipcMain.handle('bootstrap', async (_, gameId) => {
     // Lance le jeu seulement si ce n'est pas déjà en cours
     if (!gameProcess) {
       gameProcess = bootstrapGame(gameId)
@@ -225,7 +204,7 @@ app.whenReady().then(() => {
       return 'No game running'
     }
   })
-  ipcMain.handle('update-discord-rpc', (event, preset) => {
+  ipcMain.handle('update-discord-rpc', (_, preset) => {
     const presetData = RPC_PRESETS[preset]
     if (!presetData) return console.error('Preset not found for discord rpc:', preset)
     DiscordRPC.update(presetData)
@@ -260,7 +239,7 @@ app.whenReady().then(() => {
   if (!app.requestSingleInstanceLock()) {
     app.quit()
   } else {
-    app.on('second-instance', (event, commandLine) => {
+    app.on('second-instance', (_, commandLine) => {
       const url = commandLine[commandLine.length - 1]
       handleDeepLink(url)
     })

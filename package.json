@@ -1,6 +1,6 @@
 {
   "name": "kepler-studio-launcher",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "Kepler Studio Game Launcher",
   "main": "./out/main/index.js",
   "author": "kepler-studio.com",
@@ -27,6 +27,7 @@
     "clsx": "^2.1.1",
     "discord-rpc": "^4.0.1",
     "electron-updater": "^6.6.2",
+    "fs-extra": "^11.3.1",
     "lucide-react": "^0.487.0",
     "prop-types": "^15.8.1",
     "react-router-dom": "^7.5.0",
