@@ -121,7 +121,43 @@ async function executeActions(actions, baseDir) {
         }
         break
 
-      // Ajoutez ici d'autres types d'actions (renameFile, etc.)
+      case 'editOptionsTxtKey': {
+        const optionsFilePath = path.join(baseDir, 'options.txt')
+        const { key, value } = action
+
+        if (!key || value === undefined) {
+          console.warn("     Action 'editOptionsTxtKey' ignorée : clé ou valeur manquante.")
+          continue // Passe à l'action suivante
+        }
+
+        let keyExists = false
+        let lines = []
+
+        if (await fs.pathExists(optionsFilePath)) {
+          // Le fichier existe, on le lit
+          const content = await fs.readFile(optionsFilePath, 'utf-8')
+          lines = content.split(/\r?\n/) // Gère les fins de ligne Windows/Linux
+
+          // On cherche la clé pour la mettre à jour
+          lines = lines.map((line) => {
+            if (line.startsWith(key + ':')) {
+              keyExists = true
+              return `${key}:${value}`
+            }
+            return line
+          })
+        }
+
+        // Si la clé n'a pas été trouvée (ou si le fichier n'existait pas), on l'ajoute
+        if (!keyExists) {
+          lines.push(`${key}:${value}`)
+        }
+
+        // On réécrit le fichier avec les modifications
+        console.log(`     Mise à jour de options.txt : '${key}' réglé sur '${value}'`)
+        await fs.writeFile(optionsFilePath, lines.join('\n'))
+        break
+      }
 
       default:
         console.warn(`Action de type "${action.type}" non reconnue.`)
