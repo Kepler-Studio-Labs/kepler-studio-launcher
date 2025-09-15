@@ -29,7 +29,6 @@ function parseCommandLine(str, gameId, platform, arch) {
   const authData = getAuthData()
   return str
     .replaceAll('\\', platform === 'windows' ? '\\' : '/')
-    .replaceAll('\\bin', platform === 'windows' ? '\\bin\\windows' : '\\bin\\mac')
     .replaceAll(
       '{java}',
       escapeSpaces(
@@ -50,7 +49,8 @@ export const bootstrapGame = (gameId) => {
 
   const platform = getPlatform()
   const arch = getArch()
-  const commandLineFilename = join(getGameDir(gameMeta.id, true), 'start.bat')
+
+  const commandLineFilename = join(getGameDir(gameMeta.id, true), `start_${platform}.bat`)
   const commandLine = readFileSync(commandLineFilename).toString()
   const parsedCommandLine = parseCommandLine(commandLine, gameId, platform, arch)
 
