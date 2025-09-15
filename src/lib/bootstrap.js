@@ -6,6 +6,23 @@ import { spawn } from 'child_process'
 import { games } from './games'
 import { getArch, getPlatform } from './platform'
 
+function escapeSpaces(str) {
+  let out = ''
+  let inQuotes = false
+  for (let i = 0; i < str.length; i++) {
+    const c = str[i]
+    if (c === '"') {
+      inQuotes = !inQuotes
+      out += c
+    } else if (c === ' ' && !inQuotes && (i === 0 || str[i - 1] !== '\\')) {
+      out += '\\ '
+    } else {
+      out += c
+    }
+  }
+  return out
+}
+
 function parseCommandLine(str, gameId, platform, arch) {
   const gameMeta = games[gameId]
   if (!gameMeta) throw new Error('Game not found')
@@ -13,13 +30,12 @@ function parseCommandLine(str, gameId, platform, arch) {
   return str
     .replaceAll(
       '{java}',
-      resolve(getJavaDir(platform, arch), platform === 'windows' ? 'javaw.exe' : 'java').replace(
-        /(?<!\\) /g,
-        '\\ '
+      escapeSpaces(
+        resolve(getJavaDir(platform, arch), platform === 'windows' ? 'javaw.exe' : 'java')
       )
     )
     .replaceAll('{xmx}', '-Xmx8G')
-    .replaceAll('{path}', getGameDir(gameMeta.id, true).replace(/(?<!\\) /g, '\\ '))
+    .replaceAll('{path}', escapeSpaces(getGameDir(gameMeta.id, true)))
     .replaceAll('{uuid}', authData.id)
     .replaceAll('{token}', authData.mcToken)
     .replaceAll('{username}', authData.name)
