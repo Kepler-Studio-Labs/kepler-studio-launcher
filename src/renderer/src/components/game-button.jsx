@@ -4,6 +4,7 @@ import { CloudDownloadIcon } from 'lucide-react'
 import { useEffect } from 'react'
 import { GamepadIcon } from 'lucide-react'
 import PropTypes from 'prop-types'
+import { Button } from './ui/button'
 
 export const GameButton = ({ gameId }) => {
   const { installedVersions, needsUpdate, fetchVersions, startDownload, state, bootstrap } =
@@ -28,35 +29,53 @@ export const GameButton = ({ gameId }) => {
   }
 
   return (
-    <button
-      className="p-2 px-6 rounded-full bg-violet-500 hover:bg-violet-700 disabled:bg-white/25 text-white disabled:text-neutral-500 font-semibold flex items-center gap-2 cursor-pointer"
+    <Button
+      className="group relative overflow-hidden bg-white/25 cursor-pointer"
+      size="lg"
       onClick={handleClick}
       disabled={!['idle', 'ready'].includes(state)}
     >
       {installedVersions[gameId] === null && (
         <>
-          <HardDriveIcon /> Installer
+          <span className="mr-8 transition-opacity duration-500 group-hover:opacity-0 z-10">
+            Installer
+          </span>
+          <i className="absolute right-1 top-1 bottom-1 rounded-sm z-20 grid w-1/4 place-items-center transition-all duration-500 bg-primary-foreground/15 group-hover:w-[calc(100%-0.5rem)] group-active:scale-95 text-black-500">
+            <HardDriveIcon className="w-6 h-6" strokeWidth={2} aria-hidden="true" />
+          </i>
         </>
       )}
-
       {installedVersions[gameId] !== null && needsUpdate[gameId] && (
         <>
-          <CloudDownloadIcon /> Mettre à jour
+          <span className="mr-8 transition-opacity duration-500 group-hover:opacity-0 z-10">
+            Mettre à jour
+          </span>
+          <i className="absolute right-1 top-1 bottom-1 rounded-sm z-20 grid w-1/4 place-items-center transition-all duration-500 bg-primary-foreground/15 group-hover:w-[calc(100%-0.5rem)] group-active:scale-95 text-black-500">
+            <CloudDownloadIcon className="w-6 h-6" strokeWidth={2} aria-hidden="true" />
+          </i>
         </>
       )}
-
       {installedVersions[gameId] !== null && !needsUpdate[gameId] && state !== 'ingame' && (
         <>
-          <GamepadIcon /> Jouer
+          <span className="mr-8 transition-opacity duration-500 group-hover:opacity-0 z-10 text-white">
+            Jouer
+          </span>
+          <i className="absolute right-1 top-1 bottom-1 rounded-sm z-20 grid w-1/4 place-items-center transition-all duration-500 bg-primary-foreground/15 group-hover:w-[calc(100%-0.5rem)] group-active:scale-95 text-black-500">
+            <GamepadIcon className="w-6 h-6" strokeWidth={2} aria-hidden="true" />
+          </i>
         </>
       )}
-
       {installedVersions[gameId] !== null && !needsUpdate[gameId] && state === 'ingame' && (
         <>
-          <GamepadIcon className="w-4 h-4" /> En cours d&apos;exécution
+          <span className="mr-8 transition-opacity duration-500 group-hover:opacity-0 z-10 text-white">
+            En cours d&apos;exécution
+          </span>
+          <i className="absolute right-1 top-1 bottom-1 rounded-sm z-20 grid w-1/4 place-items-center transition-all duration-500 bg-primary-foreground/15 group-hover:w-[calc(100%-0.5rem)] group-active:scale-95 text-black-500">
+            <GamepadIcon className="w-6 h-6" strokeWidth={2} aria-hidden="true" />
+          </i>
         </>
       )}
-    </button>
+    </Button>
   )
 }
 

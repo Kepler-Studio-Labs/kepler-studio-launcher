@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react'
 import { Update } from './views/Update'
 import Survie from './views/Survie'
 import { SettingsOverlay } from './components/settings-overlay'
+import StarAcademy from './views/StarAcademy'
 
 function App() {
   const [isUpdate, setIsUpdate] = useState(false)
@@ -33,6 +34,7 @@ function App() {
           <Route path="/" element={<Auth />} />
           <Route path="/main" element={<Main />} />
           <Route path="/cobblemon" element={<Cobblemon />} />
+          <Route path="/star-academy" element={<StarAcademy />} />
           <Route path="/survie" element={<Survie />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
