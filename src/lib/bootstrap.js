@@ -1,5 +1,5 @@
 import { join, resolve } from 'path'
-import { getGameDir, getJavaDir } from './path'
+import { getGameDir, getJavaDir, getKeplerPath } from './path'
 import { existsSync, readFileSync, rmSync, writeFileSync } from 'fs'
 import { getAuthData } from './auth'
 import { spawn } from 'child_process'
@@ -64,6 +64,14 @@ export const bootstrapGame = (gameId) => {
 
   const execBatPath = join(getGameDir(gameMeta.id, true), 'exec.bat')
   const execShPath = join(getGameDir(gameMeta.id, true), 'exec.sh')
+
+  // apply "chown -R +x keplerPath" on MacOS
+  if (platform === 'mac') {
+    spawn('chmod', ['-R', '+x', getKeplerPath()], {
+      cwd: getKeplerPath(),
+      shell: false
+    })
+  }
 
   const child =
     platform === 'windows'
