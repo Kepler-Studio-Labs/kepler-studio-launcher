@@ -5,6 +5,10 @@ import unzipper from 'unzipper'
 import semver from 'semver'
 import fs from 'fs-extra'
 import path from 'path'
+import { getJavaDir } from './path'
+import { getArch, getPlatform } from './platform'
+import { promisify } from 'util'
+import { execFile } from 'child_process'
 
 /**
  * Récupère la version installée depuis le fichier adapté au gameId.
@@ -234,6 +238,58 @@ export async function applyUpdates(downloadsDir, unzipDir) {
     } catch (error) {
       console.error(
         `❌ Échec critique lors de l'application de la mise à jour ${file}. Processus arrêté.`,
+        error
+      )
+      // Il est crucial d'arrêter le processus ici pour ne pas continuer avec un état instable.
+      return false // ou break;
+    }
+  }
+
+  return true
+}
+
+const execFileAsync = promisify(execFile)
+
+export async function checkJRE() {
+  const platform = getPlatform()
+  const arch = getArch()
+
+  const javaDir = getJavaDir(platform, arch)
+  const javaPath = path.join(javaDir, process.platform === 'win32' ? 'java.exe' : 'java')
+
+  try {
+    // java -version usually prints to stderr
+    const { stdout, stderr } = await execFileAsync(javaPath, ['-version'])
+    console.log(stdout || stderr)
+    return { success: true, platform, arch }
+  } catch (error) {
+    // The error is normal, it happens if java is not installed
+    return { success: false, platform, arch, error: error.message }
+  }
+}
+
+export async function applyJREUpdates(downloadsDir, unzipDir) {
+  const files = fs
+    .readdirSync(downloadsDir)
+    .filter((file) => file.startsWith('jre') && file.endsWith('.zip'))
+
+  for (const file of files) {
+    const filePath = path.join(downloadsDir, file)
+    console.log(`\n--- Traitement de la mise à jour [JRE] : ${file} ---`)
+
+    try {
+      // 3. Extraire l'archive
+      console.log("Extraction des fichiers de l'archive...")
+      await fs
+        .createReadStream(filePath)
+        .pipe(unzipper.Extract({ path: path.join(unzipDir) }))
+        .promise()
+      console.log('Extraction terminée.')
+
+      console.log(`✅ Mise à jour ${file} [JRE] appliquée avec succès.`)
+    } catch (error) {
+      console.error(
+        `❌ Échec critique lors de l'application de la mise à jour ${file} [JRE]. Processus arrêté.`,
         error
       )
       // Il est crucial d'arrêter le processus ici pour ne pas continuer avec un état instable.

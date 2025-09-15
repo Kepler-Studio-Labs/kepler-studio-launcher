@@ -4,13 +4,17 @@ import { existsSync, readFileSync, rmSync, writeFileSync } from 'fs'
 import { getAuthData } from './auth'
 import { spawn } from 'child_process'
 import { games } from './games'
+import { getArch, getPlatform } from './platform'
 
-function parseCommandLine(str, gameId) {
+function parseCommandLine(str, gameId, platform, arch) {
   const gameMeta = games[gameId]
   if (!gameMeta) throw new Error('Game not found')
   const authData = getAuthData()
   return str
-    .replaceAll('{java}', resolve(getJavaDir(gameMeta.id), 'javaw.exe'))
+    .replaceAll(
+      '{java}',
+      resolve(getJavaDir(platform, arch), platform === 'windows' ? 'javaw.exe' : 'java')
+    )
     .replaceAll('{xmx}', '-Xmx8G')
     .replaceAll('{path}', getGameDir(gameMeta.id, true))
     .replaceAll('{uuid}', authData.id)
@@ -23,20 +27,33 @@ export const bootstrapGame = (gameId) => {
 
   if (!gameMeta) throw new Error('Game not found')
 
+  const platform = getPlatform()
+  const arch = getArch()
   const commandLineFilename = join(getGameDir(gameMeta.id, true), 'start.bat')
   const commandLine = readFileSync(commandLineFilename).toString()
-  const parsedCommandLine = parseCommandLine(commandLine, gameId)
+  const parsedCommandLine = parseCommandLine(commandLine, gameId, platform, arch)
 
   const executableFilename = join(getGameDir(gameMeta.id, true), 'exec.bat')
   if (existsSync(executableFilename)) rmSync(executableFilename)
   writeFileSync(executableFilename, parsedCommandLine)
 
-  const execBatPath = join(getGameDir(gameMeta.id, true), 'exec.bat')
+  const executableFilename_sh = join(getGameDir(gameMeta.id, true), 'exec.sh')
+  if (existsSync(executableFilename_sh)) rmSync(executableFilename_sh)
+  writeFileSync(executableFilename_sh, parsedCommandLine)
 
-  const child = spawn('cmd.exe', ['/c', execBatPath], {
-    cwd: getGameDir(gameMeta.id, true),
-    shell: false
-  })
+  const execBatPath = join(getGameDir(gameMeta.id, true), 'exec.bat')
+  const execShPath = join(getGameDir(gameMeta.id, true), 'exec.sh')
+
+  const child =
+    platform === 'windows'
+      ? spawn('cmd.exe', ['/c', execBatPath], {
+          cwd: getGameDir(gameMeta.id, true),
+          shell: false
+        })
+      : spawn('/bin/bash', [execShPath], {
+          cwd: getGameDir(gameMeta.id, true),
+          shell: false
+        })
 
   return child
 }

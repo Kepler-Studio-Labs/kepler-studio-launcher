@@ -29,6 +29,8 @@ const api = {
   getApiHost: () => ipcRenderer.invoke('get-api-host'),
   saveDownloadedFile: (data) => ipcRenderer.invoke('save-downloaded-file', data),
   unzipDownloadedFiles: (gameId) => ipcRenderer.invoke('unzip-downloaded-files', gameId),
+  unzipDownloadedFiles_jre: (platform, arch) =>
+    ipcRenderer.invoke('unzip-downloaded-jre-files', platform, arch),
   clearTemporaryFiles: () => ipcRenderer.invoke('clear-temporary-files'),
   saveVersionFile: (gameId, version) => ipcRenderer.invoke('save-version-file', gameId, version),
   refreshMcToken: () => ipcRenderer.invoke('refresh-mc-token'),
@@ -38,7 +40,8 @@ const api = {
   },
   stopGame: () => ipcRenderer.invoke('stop-game'),
   updateDiscordRPC: (preset) => ipcRenderer.invoke('update-discord-rpc', preset),
-  installUpdate: () => ipcRenderer.invoke('install-update')
+  installUpdate: () => ipcRenderer.invoke('install-update'),
+  checkJRE: () => ipcRenderer.invoke('check-jre')
 }
 
 if (process.contextIsolated) {

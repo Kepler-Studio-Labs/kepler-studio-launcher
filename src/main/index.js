@@ -3,9 +3,16 @@ import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { disconnect, getAuthData, refreshMcToken, saveAuthData } from '../lib/auth'
-import { applyUpdates, getInstalledVersion, getLatestVersion, saveVersionFile } from '../lib/update'
+import {
+  applyJREUpdates,
+  applyUpdates,
+  checkJRE,
+  getInstalledVersion,
+  getLatestVersion,
+  saveVersionFile
+} from '../lib/update'
 import fs from 'fs'
-import { getGameDir, getKeplerPath } from '../lib/path'
+import { getGameDir, getJavaDir, getKeplerPath } from '../lib/path'
 import { bootstrapGame } from '../lib/bootstrap'
 import { getApiHost } from '../lib/api'
 import { autoUpdater } from 'electron-updater'
@@ -159,6 +166,23 @@ app.whenReady().then(() => {
       return { success: false, error: error.message }
     }
   })
+  ipcMain.handle('unzip-downloaded-jre-files', async (_, platform, arch) => {
+    try {
+      const downloadsDir = path.join(getKeplerPath(), 'tmp')
+
+      const unzipDir = path.join(getJavaDir(platform, arch), '..')
+      if (!fs.existsSync(unzipDir)) {
+        fs.mkdirSync(unzipDir, { recursive: true })
+      }
+
+      const success = await applyJREUpdates(downloadsDir, unzipDir)
+
+      return { success, unzipDir }
+    } catch (error) {
+      console.error('Erreur lors de la décompression des fichiers :', error)
+      return { success: false, error: error.message }
+    }
+  })
   ipcMain.handle('clear-temporary-files', async () => {
     try {
       const downloadsDir = path.join(getKeplerPath(), 'tmp')
@@ -208,6 +232,10 @@ app.whenReady().then(() => {
     const presetData = RPC_PRESETS[preset]
     if (!presetData) return console.error('Preset not found for discord rpc:', preset)
     DiscordRPC.update(presetData)
+  })
+  ipcMain.handle('check-jre', async () => {
+    const jreCheck = await checkJRE()
+    return jreCheck
   })
 
   app.on('activate', function () {

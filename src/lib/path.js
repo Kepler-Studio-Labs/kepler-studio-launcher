@@ -43,9 +43,8 @@ export function getGameDir(gameId, isMinecraftInstance = false) {
   return p
 }
 
-export function getJavaDir(gameId) {
-  // isMinecraftInstance is true because java = 100% mc
-  const p = path.join(getGameDir(gameId, true), 'runtime', 'bin')
+export function getJavaDir(platform, arch) {
+  const p = path.join(getKeplerPath(), 'runtime', 'java', platform, arch, 'bin')
   if (!fs.existsSync(p))
     fs.mkdirSync(p, {
       recursive: true
