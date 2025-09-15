@@ -46,6 +46,7 @@ export const getLatestVersion = async (game) => {
     }
 
     const data = await res.json()
+    console.log(data)
     return data.success ? data.version : null
   } catch {
     return null

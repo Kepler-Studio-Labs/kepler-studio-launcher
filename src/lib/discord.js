@@ -73,7 +73,11 @@ export class DiscordRPCInstance {
     if (this.data.smallImageKey) rpcData.smallImageKey = this.data.smallImageKey
     if (this.data.smallImageText) rpcData.smallImageText = this.data.smallImageText
 
-    this.rpc.setActivity(rpcData).catch(console.error)
+    try {
+      this.rpc.setActivity(rpcData)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   update(data) {

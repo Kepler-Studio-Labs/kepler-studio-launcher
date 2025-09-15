@@ -11,6 +11,8 @@ self.onmessage = async function (e) {
     const json = await response.json()
     const files = json.updates
 
+    console.log(files)
+
     const totalBytes = files.reduce((acc, file) => acc + file.size, 0)
     let downloadedBytes = 0
 

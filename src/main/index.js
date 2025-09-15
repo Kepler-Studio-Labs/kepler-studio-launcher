@@ -129,7 +129,11 @@ app.whenReady().then(() => {
   ipcMain.handle('get-app-version', async () => {
     return app.getVersion()
   })
-  ipcMain.handle('get-installed-version', (_, game) => getInstalledVersion(game))
+  ipcMain.handle('get-installed-version', (_, game) => {
+    const ver = getInstalledVersion(game)
+    console.log('Installed version of', game, 'is', ver)
+    return ver
+  })
   ipcMain.handle('get-latest-version', async (_, game) => await getLatestVersion(game))
   ipcMain.handle('get-game-meta', async (_, game) => games[game])
   ipcMain.handle('get-api-host', () => getApiHost())
@@ -186,7 +190,7 @@ app.whenReady().then(() => {
   ipcMain.handle('clear-temporary-files', async () => {
     try {
       const downloadsDir = path.join(getKeplerPath(), 'tmp')
-      fs.rmSync(downloadsDir, { recursive: true })
+      if (fs.existsSync(downloadsDir)) fs.rmSync(downloadsDir, { recursive: true })
       return { success: true }
     } catch (error) {
       console.error('Erreur lors de la suppression des fichiers temporaires :', error)
