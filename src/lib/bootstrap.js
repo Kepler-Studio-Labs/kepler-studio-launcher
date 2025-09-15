@@ -13,10 +13,13 @@ function parseCommandLine(str, gameId, platform, arch) {
   return str
     .replaceAll(
       '{java}',
-      resolve(getJavaDir(platform, arch), platform === 'windows' ? 'javaw.exe' : 'java')
+      resolve(getJavaDir(platform, arch), platform === 'windows' ? 'javaw.exe' : 'java').replace(
+        /(?<!\\) /g,
+        '\\ '
+      )
     )
     .replaceAll('{xmx}', '-Xmx8G')
-    .replaceAll('{path}', getGameDir(gameMeta.id, true))
+    .replaceAll('{path}', getGameDir(gameMeta.id, true).replace(/(?<!\\) /g, '\\ '))
     .replaceAll('{uuid}', authData.id)
     .replaceAll('{token}', authData.mcToken)
     .replaceAll('{username}', authData.name)
