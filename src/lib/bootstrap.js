@@ -28,6 +28,7 @@ function parseCommandLine(str, gameId, platform, arch) {
   if (!gameMeta) throw new Error('Game not found')
   const authData = getAuthData()
   return str
+    .replaceAll('\\', platform === 'windows' ? '\\' : '/')
     .replaceAll(
       '{java}',
       escapeSpaces(
