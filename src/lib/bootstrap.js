@@ -29,6 +29,7 @@ function parseCommandLine(str, gameId, platform, arch) {
   const authData = getAuthData()
   return str
     .replaceAll('\\', platform === 'windows' ? '\\' : '/')
+    .replaceAll('\\bin', platform === 'windows' ? '\\bin\\windows' : '\\bin\\mac')
     .replaceAll(
       '{java}',
       escapeSpaces(
