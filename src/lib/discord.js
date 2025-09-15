@@ -61,19 +61,19 @@ export class DiscordRPCInstance {
   }
 
   refresh() {
-    const rpcData = {
-      instance: false,
-      startTimestamp: this.data.startTimestamp
-    }
-
-    if (this.data.details) rpcData.details = this.data.details
-    if (this.data.state) rpcData.state = this.data.state
-    if (this.data.largeImageKey) rpcData.largeImageKey = this.data.largeImageKey
-    if (this.data.largeImageText) rpcData.largeImageText = this.data.largeImageText
-    if (this.data.smallImageKey) rpcData.smallImageKey = this.data.smallImageKey
-    if (this.data.smallImageText) rpcData.smallImageText = this.data.smallImageText
-
     try {
+      const rpcData = {
+        instance: false,
+        startTimestamp: this.data.startTimestamp
+      }
+
+      if (this.data.details) rpcData.details = this.data.details
+      if (this.data.state) rpcData.state = this.data.state
+      if (this.data.largeImageKey) rpcData.largeImageKey = this.data.largeImageKey
+      if (this.data.largeImageText) rpcData.largeImageText = this.data.largeImageText
+      if (this.data.smallImageKey) rpcData.smallImageKey = this.data.smallImageKey
+      if (this.data.smallImageText) rpcData.smallImageText = this.data.smallImageText
+
       this.rpc.setActivity(rpcData)
     } catch (error) {
       console.error(error)
