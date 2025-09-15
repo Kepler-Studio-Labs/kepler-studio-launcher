@@ -12,7 +12,7 @@ import {
   saveVersionFile
 } from '../lib/update'
 import fs from 'fs'
-import { getGameDir, getJavaDir, getKeplerPath } from '../lib/path'
+import { getGameDir, getJavaInstallDir, getKeplerPath } from '../lib/path'
 import { bootstrapGame } from '../lib/bootstrap'
 import { getApiHost } from '../lib/api'
 import { autoUpdater } from 'electron-updater'
@@ -174,7 +174,7 @@ app.whenReady().then(() => {
     try {
       const downloadsDir = path.join(getKeplerPath(), 'tmp')
 
-      const unzipDir = path.join(getJavaDir(platform, arch), '..')
+      const unzipDir = getJavaInstallDir(platform, arch)
       if (!fs.existsSync(unzipDir)) {
         fs.mkdirSync(unzipDir, { recursive: true })
       }

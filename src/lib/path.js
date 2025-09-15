@@ -43,8 +43,24 @@ export function getGameDir(gameId, isMinecraftInstance = false) {
   return p
 }
 
+export function getJavaInstallDir(platform, arch) {
+  const p = path.join(getKeplerPath(), 'runtime', 'java', platform, arch)
+  if (!fs.existsSync(p))
+    fs.mkdirSync(p, {
+      recursive: true
+    })
+  return p
+}
+
 export function getJavaDir(platform, arch) {
-  const p = path.join(getKeplerPath(), 'runtime', 'java', platform, arch, 'bin')
+  const p = path.join(
+    getKeplerPath(),
+    'runtime',
+    'java',
+    platform,
+    arch,
+    platform === 'windows' ? 'bin' : 'Contents/Home/bin'
+  )
   if (!fs.existsSync(p))
     fs.mkdirSync(p, {
       recursive: true
