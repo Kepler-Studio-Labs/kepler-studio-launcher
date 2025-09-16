@@ -27,14 +27,26 @@ function parseCommandLine(str, gameId, platform, arch) {
   const gameMeta = games[gameId]
   if (!gameMeta) throw new Error('Game not found')
   const authData = getAuthData()
+
+  const classicJavaPath = resolve(
+    getJavaDir(platform, arch),
+    platform === 'windows' ? 'javaw.exe' : 'java'
+  )
+  const customJavaPath = escapeSpaces(
+    resolve(
+      getGameDir(gameMeta.id, true),
+      'runtime',
+      platform,
+      platform === 'windows' ? 'bin/javaw.exe' : 'Contents/Home/bin/java'
+    )
+  )
+
+  let finalJavaPath = classicJavaPath
+  if (existsSync(customJavaPath)) finalJavaPath = customJavaPath
+
   return str
     .replaceAll('\\', platform === 'windows' ? '\\' : '/')
-    .replaceAll(
-      '{java}',
-      escapeSpaces(
-        resolve(getJavaDir(platform, arch), platform === 'windows' ? 'javaw.exe' : 'java')
-      )
-    )
+    .replaceAll('{java}', finalJavaPath)
     .replaceAll('{xmx}', '-Xmx8G')
     .replaceAll('{path}', escapeSpaces(getGameDir(gameMeta.id, true)))
     .replaceAll('{uuid}', authData.id)
