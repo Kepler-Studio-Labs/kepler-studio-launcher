@@ -13,7 +13,7 @@ function AppSidebar() {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const starAcademyWhitelist = ['LeVraiPumba', 'Drazouu', 'Cl0udyseul', 'Aerithia_']
+  const starAcademyWhitelist = ['LeVraiPumba', 'Drazouu', 'Cl0udyseul', 'Aerithia_', 'Swadar']
   const [username, setUsername] = useState('')
 
   useEffect(() => {
