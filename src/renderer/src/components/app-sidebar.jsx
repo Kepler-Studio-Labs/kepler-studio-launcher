@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import icon from '../assets/icon.png'
-import { BeefIcon, SparkleIcon, UnplugIcon } from 'lucide-react'
+import { BeefIcon, UnplugIcon } from 'lucide-react'
 import { UserIcon } from 'lucide-react'
 import { HouseIcon } from 'lucide-react'
 import { SettingsIcon } from 'lucide-react'
@@ -8,18 +8,29 @@ import clsx from 'clsx'
 import pokemonSvg from '../assets/433-4335826_new-pokemon-icon-icon.png'
 import { useEffect, useState } from 'react'
 import { cn } from '../renderer-libs/utils'
+import { getStarAcademyWhitelist } from '../renderer-libs/client-api'
 
 function AppSidebar() {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const starAcademyWhitelist = ['LeVraiPumba', 'Drazouu', 'Cl0udyseul', 'Aerithia_', 'Swadar']
+  const [starAcademyWhitelist, setStarAcademyWhitelist] = useState([])
   const [username, setUsername] = useState('')
 
   useEffect(() => {
     window.api.getAuthData().then((authData) => {
       setUsername(authData.name)
     })
+    getStarAcademyWhitelist()
+      .then((whiteListData) => {
+        setStarAcademyWhitelist(whiteListData.data)
+      })
+      .catch((error) => {
+        console.error(error)
+        alert(
+          'Une erreur est survenue lors de la récupération de la liste blanche de Star Academy !'
+        )
+      })
   }, [])
 
   const handleDisconnect = () => {
@@ -56,40 +67,48 @@ function AppSidebar() {
       <div className="w-full space-y-6">
         <button
           className={clsx(
-            'rounded-full p-4 w-full flex flex-nowrap items-center gap-3 cursor-pointer relative group/item',
-            location.pathname === '/profile'
-              ? 'bg-violet-700'
-              : 'bg-neutral-800 hover:bg-white hover:text-black'
+            'p-4 w-full flex items-center gap-3 cursor-pointer relative group/item overflow-hidden rounded-full',
+            location.pathname === '/profile' ? '' : 'bg-neutral-800 hover:bg-white hover:text-black'
           )}
           onClick={() => navigate('/profile')}
         >
-          <UserIcon className="w-6 h-6 shrink-0" />
+          {location.pathname === '/profile' && (
+            <div
+              className={cn(
+                'absolute inset-0',
+                'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500',
+                'opacity-80 group-hover:opacity-80',
+                'blur transition-opacity duration-500'
+              )}
+            />
+          )}
+          <UserIcon className={cn('w-6 h-6 shrink-0 z-10')} />
           {isOpen && <span className="z-20 font-medium text-from-left-animation">Profil</span>}
         </button>
         <div className="w-full">
           <button
             className={clsx(
-              'rounded-full p-4 w-full flex flex-nowrap items-center gap-3 cursor-pointer relative group/item',
-              location.pathname === '/main'
-                ? 'bg-violet-700'
-                : 'bg-neutral-800 hover:bg-white hover:text-black'
+              'p-4 w-full flex items-center gap-3 cursor-pointer relative group/item overflow-hidden rounded-t-2xl',
+              location.pathname === '/main' ? '' : 'bg-neutral-800 hover:bg-white hover:text-black'
             )}
             onClick={() => {
               navigate('/main')
             }}
           >
-            <span
-              className={clsx(
-                'absolute w-full bg-neutral-700 left-0 right-0 top-8 bottom-0 z-0',
-                location.pathname === '/main'
-                  ? 'bg-violet-700'
-                  : 'bg-neutral-800 group-hover/item:bg-white group-hover/item:text-black'
-              )}
-            ></span>
-            <HouseIcon className="w-6 h-6 shrink-0 z-10" />
+            {location.pathname === '/main' && (
+              <div
+                className={cn(
+                  'absolute inset-0',
+                  'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500',
+                  'opacity-80 group-hover:opacity-80',
+                  'blur transition-opacity duration-500'
+                )}
+              />
+            )}
+            <HouseIcon className={cn('w-6 h-6 shrink-0 z-10')} />
             {isOpen && <span className="z-20 font-medium text-from-left-animation">Accueil</span>}
           </button>
-          {starAcademyWhitelist.includes(username) && (
+          {starAcademyWhitelist.some((el) => el.username === username) && (
             <button
               className={clsx(
                 'p-4 w-full flex items-center gap-3 cursor-pointer relative group/item overflow-hidden',
@@ -126,52 +145,50 @@ function AppSidebar() {
           )}
           <button
             className={clsx(
-              'p-4 w-full flex items-center gap-3 cursor-pointer relative',
-              location.pathname === '/cobblemon'
-                ? 'bg-violet-700'
-                : 'bg-neutral-800 hover:bg-white hover:text-black'
-            )}
-            onClick={() => {
-              navigate('/cobblemon')
-            }}
-          >
-            <SparkleIcon className="w-6 h-6 shrink-0" />
-            {isOpen && <span className="z-20 font-medium text-from-left-animation">Cobblemon</span>}
-          </button>
-          <button
-            className={clsx(
-              'p-4 w-full flex items-center gap-3 cursor-pointer relative',
+              'p-4 w-full flex items-center gap-3 cursor-pointer relative group/item overflow-hidden',
               location.pathname === '/survie'
-                ? 'bg-violet-700'
+                ? ''
                 : 'bg-neutral-800 hover:bg-white hover:text-black'
             )}
             onClick={() => {
               navigate('/survie')
             }}
           >
-            <BeefIcon className="w-6 h-6 shrink-0" />
+            {location.pathname === '/survie' && (
+              <div
+                className={cn(
+                  'absolute inset-0',
+                  'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500',
+                  'opacity-80 group-hover:opacity-80',
+                  'blur transition-opacity duration-500'
+                )}
+              />
+            )}
+            <BeefIcon className={cn('w-6 h-6 shrink-0 z-10')} />
             {isOpen && <span className="z-20 font-medium text-from-left-animation">Survie</span>}
           </button>
           <button
             className={clsx(
-              'rounded-full p-4 w-full flex flex-nowrap items-center gap-3 cursor-pointer relative group/item',
+              'p-4 w-full flex items-center gap-3 cursor-pointer relative group/item overflow-hidden rounded-b-2xl',
               location.pathname === '/settings'
-                ? 'bg-violet-700'
+                ? ''
                 : 'bg-neutral-800 hover:bg-white hover:text-black'
             )}
             onClick={() => {
               navigate('/settings')
             }}
           >
-            <span
-              className={clsx(
-                'absolute w-full bg-neutral-700 left-0 right-0 bottom-8 top-0 z-0',
-                location.pathname === '/settings'
-                  ? 'bg-violet-700'
-                  : 'bg-neutral-800 group-hover/item:bg-white group-hover/item:text-black'
-              )}
-            ></span>
-            <SettingsIcon className="w-6 h-6 shrink-0 z-10" />
+            {location.pathname === '/settings' && (
+              <div
+                className={cn(
+                  'absolute inset-0',
+                  'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500',
+                  'opacity-80 group-hover:opacity-80',
+                  'blur transition-opacity duration-500'
+                )}
+              />
+            )}
+            <SettingsIcon className={cn('w-6 h-6 shrink-0 z-10')} />
             {isOpen && (
               <span className="z-20 font-medium text-from-left-animation">Paramètres</span>
             )}

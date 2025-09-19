@@ -5,6 +5,7 @@ import { getAuthLink, getHandshakeURL } from '../../../lib/api'
 import { Loader } from '../components/loader'
 import { FrownIcon } from 'lucide-react'
 import { ExternalLinkIcon } from 'lucide-react'
+import { cn } from '../renderer-libs/utils'
 
 function Auth() {
   const navigate = useNavigate()
@@ -65,19 +66,28 @@ function Auth() {
               href={getAuthLink()}
               target="_blank"
               rel="noreferrer"
-              className="block py-4 px-12 w-fit bg-violet-500 hover:bg-violet-700 transition-all text-white font-bold text-lg rounded"
+              className="p-4 w-full flex items-center justify-center gap-3 cursor-pointer relative group/item overflow-hidden rounded-xl bg-neutral-800 hover:bg-white hover:text-black"
             >
-              Connexion
+              <div
+                className={cn(
+                  'absolute inset-0',
+                  'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500',
+                  'opacity-80 group-hover:opacity-80',
+                  'blur transition-opacity duration-500'
+                )}
+              />
+              <span className="z-20 font-bold text-white text-lg">Se connecter</span>
             </a>
+
             <p className="font-semibold uppercase text-neutral-500 w-full text-center">
-              Pas de compte Minecraft ?{' '}
+              Vous ne possédez pas Minecraft ?{' '}
               <a
                 href="https://www.minecraft.net/fr-fr"
                 target="_blank"
                 rel="noreferrer"
-                className="text-violet-500 hover:underline"
+                className="z-20 text-white hover:underline"
               >
-                Acheter le jeu
+                Achetez-le ICI
               </a>
             </p>
           </>

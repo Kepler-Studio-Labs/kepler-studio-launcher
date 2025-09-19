@@ -1,6 +1,6 @@
 {
   "name": "kepler-studio-launcher",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "description": "Kepler Studio Game Launcher",
   "main": "./out/main/index.js",
   "author": "kepler-studio.com",
