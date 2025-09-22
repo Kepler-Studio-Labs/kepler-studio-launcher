@@ -38,6 +38,9 @@ const api = {
   onGameClosed: (callback) => {
     ipcRenderer.on('game-closed', (event, code) => callback(code))
   },
+  onGameStartProgress: (callback) => {
+    ipcRenderer.on('game-start-progress', (event, data) => callback(data))
+  },
   stopGame: () => ipcRenderer.invoke('stop-game'),
   updateDiscordRPC: (preset) => ipcRenderer.invoke('update-discord-rpc', preset),
   installUpdate: () => ipcRenderer.invoke('install-update'),

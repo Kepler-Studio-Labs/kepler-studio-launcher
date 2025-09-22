@@ -27,7 +27,7 @@ function Main() {
                 </p>
                 <button
                   className="p-4 px-8 bg-violet-500 hover:bg-violet-600 transition-all font-semibold text-xl cursor-pointer flex items-center gap-2"
-                  onClick={() => navigate('/cobblemon')}
+                  onClick={() => navigate('/star-academy')}
                 >
                   <CompassIcon /> Découvrir
                 </button>

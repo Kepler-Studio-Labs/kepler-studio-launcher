@@ -26,7 +26,7 @@ function StarAcademy() {
                   'La saison 2 de Cobblemon ouvre ses portes avec de nouveaux défis et opportunités. Capture, entraîne et affronte d’autres dresseurs dans un monde en constante évolution. Prépare-toi à repousser tes limites et à laisser ta marque sur l’académie.'
                 }
               />
-              <div className="flex items-center gap-2 opacity-75">
+              <div className="flex items-center gap-2">
                 <GameButton gameId="staracademy" />
                 <button
                   className="p-2.5 px-1.5 rounded-lg bg-white/30 text-transparent font-semibold flex items-center gap-2 cursor-not-allowed"

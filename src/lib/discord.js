@@ -38,6 +38,15 @@ export const RPC_PRESETS = {
     smallImageKey: 'keplerbg',
     smallImageText: 'En jeu',
     startTimestamp: new Date()
+  },
+  STAR_ACADEMY_PLAYING: {
+    details: 'Cobblemon: Star Academy',
+    state: 'En jeu',
+    largeImageKey: 'pokeball',
+    largeImageText: 'Cobblemon: Star Academy',
+    smallImageKey: 'keplerbg',
+    smallImageText: 'En jeu',
+    startTimestamp: new Date()
   }
 }
 

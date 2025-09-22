@@ -1,3 +1,11 @@
 import { Loader2Icon } from 'lucide-react'
+import { cn } from '../renderer-libs/utils'
+import PropTypes from 'prop-types'
 
-export const Loader = () => <Loader2Icon className="w-4 h-4 animate-spin" strokeWidth={3} />
+export const Loader = ({ className }) => (
+  <Loader2Icon className={cn('w-4 h-4 animate-spin', className)} strokeWidth={3} />
+)
+
+Loader.propTypes = {
+  className: PropTypes.string
+}

@@ -167,17 +167,25 @@ export const useLauncherStore = create((set, get) => ({
     }
 
     window.api.updateDiscordRPC(`${gameMeta.dbId}_PLAYING`)
+    set({ state: 'launching', gameId })
     await window.api.bootstrap(gameId)
-    set({ state: 'ingame', gameId })
     window.api.onGameClosed((code) => {
       console.log("Event 'game-closed' reçu avec code", code)
       window.api.updateDiscordRPC('MAIN_MENU')
-      set({ state: 'ready', gameId: null })
+      set({ state: 'idle', gameId: null })
+    })
+    window.api.onGameStartProgress((data) => {
+      if (get().gameId === data.gameId) {
+        set({ progress: data.progress })
+        if (data.progress === 100) {
+          set({ state: 'ingame', gameId })
+        }
+      }
     })
   },
   stopGame: async () => {
     await window.api.stopGame()
-    set({ state: 'ready', gameId: null })
+    set({ state: 'idle', gameId: null })
     window.api.updateDiscordRPC('MAIN_MENU')
   }
 }))

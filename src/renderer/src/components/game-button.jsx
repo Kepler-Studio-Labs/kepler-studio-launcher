@@ -1,14 +1,23 @@
-import { HardDriveIcon } from 'lucide-react'
+import { DownloadIcon } from 'lucide-react'
 import { useLauncherStore } from '../store/useLauncherStore'
 import { CloudDownloadIcon } from 'lucide-react'
 import { useEffect } from 'react'
 import { GamepadIcon } from 'lucide-react'
 import PropTypes from 'prop-types'
-import { Button } from './ui/button'
+import { cn } from '../renderer-libs/utils'
+import { Loader } from './loader'
 
 export const GameButton = ({ gameId }) => {
-  const { installedVersions, needsUpdate, fetchVersions, startDownload, state, bootstrap } =
-    useLauncherStore()
+  const {
+    installedVersions,
+    needsUpdate,
+    fetchVersions,
+    startDownload,
+    state,
+    bootstrap,
+    progress,
+    gameId: gameIdStore
+  } = useLauncherStore()
 
   useEffect(() => {
     fetchVersions(gameId)
@@ -28,54 +37,224 @@ export const GameButton = ({ gameId }) => {
     }
   }
 
-  return (
-    <Button
-      className="group relative overflow-hidden bg-white/25 cursor-pointer"
-      size="lg"
-      onClick={handleClick}
-      disabled={!['idle', 'ready'].includes(state)}
-    >
-      {installedVersions[gameId] === null && (
-        <>
-          <span className="mr-8 transition-opacity duration-500 group-hover:opacity-0 z-10">
+  const isLaunchingButton = state === 'launching' && gameIdStore === gameId
+
+  if (isLaunchingButton)
+    return (
+      <button className="max-w-sm w-full py-3 px-6  text-white font-mono uppercase tracking-wider rounded-lg relative overflow-hidden group transition-all duration-300">
+        <div
+          className={cn(
+            'absolute inset-0',
+            'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500',
+            'opacity-50',
+            'blur transition-opacity duration-500'
+          )}
+        />
+        {progress < 100 && (
+          <>
+            <span className="z-20 font-medium text-from-left-animation opacity-100">
+              <Loader className="inline-block w-5 h-5 mr-2" />
+              Lancement ({progress}%)
+            </span>
+            <div
+              className={cn(
+                'absolute w-0 z-10 opacity-100 bottom-0 left-0 h-1 bg-gradient-to-l from-indigo-400 via-purple-400 to-pink-400 transition-all duration-200',
+                `max-w-full min-w-0`
+              )}
+              style={{ width: `${progress}%` }}
+            />
+          </>
+        )}
+        {progress === 100 && (
+          <>
+            <span className="z-20 font-medium text-from-left-animation">
+              <GamepadIcon className="inline-block w-5 h-5 mr-2" />
+              En cours d&apos;exécution
+            </span>
+            <div className="absolute z-10 opacity-100 bottom-0 left-0 h-1 bg-gradient-to-l from-indigo-400 via-purple-400 to-pink-400 transition-all duration-200 w-full" />
+          </>
+        )}
+      </button>
+    )
+
+  const isInstallButton = installedVersions[gameId] === null
+
+  if (isInstallButton)
+    return (
+      <button
+        className="cursor-pointer max-w-sm w-full py-3 px-6  text-white font-mono uppercase tracking-wider rounded-lg relative overflow-hidden group transition-all duration-300 disabled:opacity-50"
+        onClick={handleClick}
+        disabled={!['idle', 'ready'].includes(state)}
+      >
+        <div
+          className={cn(
+            'absolute inset-0',
+            'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500',
+            'opacity-80 group-hover:opacity-80',
+            'blur transition-opacity duration-500'
+          )}
+        />
+        {state === 'downloading' && gameIdStore === gameId && (
+          <span className="z-20 font-medium text-from-left-animation">
+            <Loader className="inline-block w-5 h-5 mr-2" />
+            Téléchargement ({progress}%)
+          </span>
+        )}
+        {state === 'unzipping' && gameIdStore === gameId && (
+          <span className="z-20 font-medium text-from-left-animation">
+            <Loader className="inline-block w-5 h-5 mr-2" />
+            Décompression
+          </span>
+        )}
+        {state === 'idle' && (
+          <span className="z-20 font-medium text-from-left-animation">
+            <DownloadIcon className="inline-block w-5 h-5 mr-2" />
             Installer
           </span>
-          <i className="absolute right-1 top-1 bottom-1 rounded-sm z-20 grid w-1/4 place-items-center transition-all duration-500 bg-primary-foreground/15 group-hover:w-[calc(100%-0.5rem)] group-active:scale-95 text-black-500">
-            <HardDriveIcon className="w-6 h-6" strokeWidth={2} aria-hidden="true" />
-          </i>
-        </>
-      )}
-      {installedVersions[gameId] !== null && needsUpdate[gameId] && (
-        <>
-          <span className="mr-8 transition-opacity duration-500 group-hover:opacity-0 z-10">
+        )}
+        <div className="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-l from-indigo-400 via-purple-400 to-pink-400 group-hover:w-full transition-all duration-500" />
+      </button>
+    )
+
+  const isUpdateButton = installedVersions[gameId] !== null && needsUpdate[gameId]
+
+  if (isUpdateButton)
+    return (
+      <button
+        className="cursor-pointer max-w-sm w-full py-3 px-6  text-white font-mono uppercase tracking-wider rounded-lg relative overflow-hidden group transition-all duration-300 disabled:opacity-50"
+        onClick={handleClick}
+        disabled={!['idle', 'ready'].includes(state)}
+      >
+        <div
+          className={cn(
+            'absolute inset-0',
+            'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500',
+            'opacity-80 group-hover:opacity-80',
+            'blur transition-opacity duration-500'
+          )}
+        />
+        {state === 'downloading' && gameIdStore === gameId && (
+          <span className="z-20 font-medium text-from-left-animation">
+            <Loader className="inline-block w-5 h-5 mr-2" />
+            Téléchargement de la MàJ ({progress}%)
+          </span>
+        )}
+        {state === 'unzipping' && gameIdStore === gameId && (
+          <span className="z-20 font-medium text-from-left-animation">
+            <Loader className="inline-block w-5 h-5 mr-2" />
+            Décompression de la MàJ
+          </span>
+        )}
+        {state === 'idle' && (
+          <span className="z-20 font-medium text-from-left-animation">
+            <CloudDownloadIcon className="inline-block w-5 h-5 mr-2" />
             Mettre à jour
           </span>
-          <i className="absolute right-1 top-1 bottom-1 rounded-sm z-20 grid w-1/4 place-items-center transition-all duration-500 bg-primary-foreground/15 group-hover:w-[calc(100%-0.5rem)] group-active:scale-95 text-black-500">
-            <CloudDownloadIcon className="w-6 h-6" strokeWidth={2} aria-hidden="true" />
-          </i>
-        </>
-      )}
-      {installedVersions[gameId] !== null && !needsUpdate[gameId] && state !== 'ingame' && (
-        <>
-          <span className="mr-8 transition-opacity duration-500 group-hover:opacity-0 z-10 text-white">
+        )}
+        <div className="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-l from-indigo-400 via-purple-400 to-pink-400 group-hover:w-full transition-all duration-500" />
+      </button>
+    )
+
+  const isJreButton = state === 'downloading_jre' && gameIdStore === gameId
+  if (isJreButton)
+    return (
+      <button
+        className="max-w-sm w-full py-3 px-6  text-white font-mono uppercase tracking-wider rounded-lg relative overflow-hidden group transition-all duration-300 disabled:opacity-50"
+        onClick={handleClick}
+        disabled={!['idle', 'ready'].includes(state)}
+      >
+        <div
+          className={cn(
+            'absolute inset-0',
+            'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500',
+            'opacity-80 group-hover:opacity-80',
+            'blur transition-opacity duration-500'
+          )}
+        />
+        <span className="z-20 font-medium text-from-left-animation">
+          <Loader className="inline-block w-5 h-5 mr-2" />
+          Téléchargement du JRE ({progress}%)
+        </span>
+        <div className="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-l from-indigo-400 via-purple-400 to-pink-400 group-hover:w-full transition-all duration-500" />
+      </button>
+    )
+
+  const isPlayButton =
+    installedVersions[gameId] !== null && !needsUpdate[gameId] && state !== 'ingame'
+
+  if (isPlayButton)
+    return (
+      <button
+        className="cursor-pointer max-w-sm w-full py-3 px-6  text-white font-mono uppercase tracking-wider rounded-lg relative overflow-hidden group transition-all duration-300 disabled:opacity-50"
+        onClick={handleClick}
+        disabled={!['idle', 'ready'].includes(state)}
+      >
+        <div
+          className={cn(
+            'absolute inset-0',
+            'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500',
+            'opacity-80 group-hover:opacity-80',
+            'blur transition-opacity duration-500'
+          )}
+        />
+        {state === 'idle' && (
+          <span className="z-20 font-medium text-from-left-animation">
+            <GamepadIcon className="inline-block w-5 h-5 mr-2" />
             Jouer
           </span>
-          <i className="absolute right-1 top-1 bottom-1 rounded-sm z-20 grid w-1/4 place-items-center transition-all duration-500 bg-primary-foreground/15 group-hover:w-[calc(100%-0.5rem)] group-active:scale-95 text-black-500">
-            <GamepadIcon className="w-6 h-6" strokeWidth={2} aria-hidden="true" />
-          </i>
-        </>
-      )}
-      {installedVersions[gameId] !== null && !needsUpdate[gameId] && state === 'ingame' && (
-        <>
-          <span className="mr-8 transition-opacity duration-500 group-hover:opacity-0 z-10 text-white">
-            En cours d&apos;exécution
+        )}
+        {state === 'refreshing' && (
+          <span className="z-20 font-medium text-from-left-animation">
+            <Loader className="inline-block w-5 h-5 mr-2" />
+            Authentification...
           </span>
-          <i className="absolute right-1 top-1 bottom-1 rounded-sm z-20 grid w-1/4 place-items-center transition-all duration-500 bg-primary-foreground/15 group-hover:w-[calc(100%-0.5rem)] group-active:scale-95 text-black-500">
-            <GamepadIcon className="w-6 h-6" strokeWidth={2} aria-hidden="true" />
-          </i>
-        </>
-      )}
-    </Button>
+        )}
+        <div className="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-l from-indigo-400 via-purple-400 to-pink-400 group-hover:w-full transition-all duration-500" />
+      </button>
+    )
+
+  const isInGameButton =
+    installedVersions[gameId] !== null &&
+    !needsUpdate[gameId] &&
+    state === 'ingame' &&
+    gameIdStore === gameId
+
+  if (isInGameButton)
+    return (
+      <button
+        className="max-w-sm w-full py-3 px-6  text-white font-mono uppercase tracking-wider rounded-lg relative overflow-hidden group transition-all duration-300 disabled:opacity-50"
+        onClick={handleClick}
+        disabled={!['idle', 'ready'].includes(state)}
+      >
+        <div
+          className={cn(
+            'absolute inset-0',
+            'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500',
+            'opacity-80 group-hover:opacity-80',
+            'blur transition-opacity duration-500'
+          )}
+        />
+        <span className="z-20 font-medium text-from-left-animation">
+          <GamepadIcon className="inline-block w-5 h-5 mr-2" />
+          En cours d&apos;exécution
+        </span>
+        <div className="absolute opacity-100 bottom-0 left-0 h-1 bg-gradient-to-l from-indigo-400 via-purple-400 to-pink-400 transition-all duration-200 w-full" />
+      </button>
+    )
+
+  return (
+    <button className="max-w-sm w-full py-3 px-6  text-white font-mono uppercase tracking-wider rounded-lg relative overflow-hidden group transition-all duration-300 disabled:opacity-50">
+      <div
+        className={cn(
+          'absolute inset-0',
+          'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500',
+          'opacity-80 group-hover:opacity-80',
+          'blur transition-opacity duration-500'
+        )}
+      />
+      <span className="z-20 font-medium text-from-left-animation">Indisponible</span>
+      <div className="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-l from-indigo-400 via-purple-400 to-pink-400 group-hover:w-full transition-all duration-500" />
+    </button>
   )
 }
 

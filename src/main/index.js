@@ -201,13 +201,50 @@ app.whenReady().then(() => {
   ipcMain.handle('bootstrap', async (_, gameId) => {
     // Lance le jeu seulement si ce n'est pas déjà en cours
     if (!gameProcess) {
+      const startedAt = Date.now()
+      if (!fs.existsSync(path.join(getKeplerPath(), 'kepler-logs', gameId)))
+        fs.mkdirSync(path.join(getKeplerPath(), 'kepler-logs', gameId), {
+          recursive: true
+        })
+      fs.writeFileSync(path.join(getKeplerPath(), 'kepler-logs', gameId, `${startedAt}.log`), '')
       gameProcess = bootstrapGame(gameId)
       gameProcess.on('close', (code) => {
+        fs.unlinkSync(path.join(getKeplerPath(), 'kepler-logs', gameId, `${startedAt}.log`))
         win.webContents.send('game-closed', code)
         gameProcess = null
       })
+
+      const startPoints = games[gameId].startPoints
+
+      const checkLog = (data) => {
+        if (startPoints.some((sp) => data.includes(sp.match))) {
+          const progress = startPoints.find((sp) => data.includes(sp.match)).progress
+          win.webContents.send('game-start-progress', {
+            progress,
+            gameId
+          })
+        }
+      }
+
       gameProcess.stdout.on('data', (data) => {
-        console.log(`stdout: ${data}`)
+        const startedSinceSeconds = Math.round((Date.now() - startedAt) / 1000)
+        const msg = `(${startedSinceSeconds}s) stdout: ${data}\n`
+        //console.log(msg)
+        fs.appendFileSync(
+          path.join(getKeplerPath(), 'kepler-logs', gameId, `${startedAt}.log`),
+          msg
+        )
+        checkLog(data)
+      })
+      gameProcess.stderr.on('data', (data) => {
+        const startedSinceSeconds = Math.round((Date.now() - startedAt) / 1000)
+        const msg = `(${startedSinceSeconds}s) stderr: ${data}\n`
+        //console.log(msg)
+        fs.appendFileSync(
+          path.join(getKeplerPath(), 'kepler-logs', gameId, `${startedAt}.log`),
+          msg
+        )
+        checkLog(data)
       })
     }
     return 'Game started'
