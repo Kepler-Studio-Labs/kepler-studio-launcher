@@ -46,7 +46,6 @@ export const getLatestVersion = async (game) => {
     }
 
     const data = await res.json()
-    console.log(data)
     return data.success ? data.version : null
   } catch {
     return null
@@ -60,12 +59,10 @@ z * @param {string} game
  * @returns {boolean} true si la sauvegarde a réussi, false sinon
  */
 export const saveVersionFile = (game, version) => {
-  console.log('v', game, version)
   const versionFilePath = path.join(app.getPath('appData'), '.kepler', `${game}-version.txt`)
   try {
     if (fs.existsSync(versionFilePath)) fs.rmSync(versionFilePath)
     fs.writeFileSync(versionFilePath, version)
-    console.log('done')
     return true
   } catch (error) {
     console.error(error)

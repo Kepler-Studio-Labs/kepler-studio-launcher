@@ -18,6 +18,7 @@ import { getApiHost } from '../lib/api'
 import { autoUpdater } from 'electron-updater'
 import { DiscordRPCInstance, RPC_PRESETS } from '../lib/discord'
 import { games } from '../lib/games'
+import { getMinecraftServerInfos } from '../lib/mc-server-query'
 
 let gameProcess = null // Stocke la référence du processus lanc
 
@@ -131,12 +132,15 @@ app.whenReady().then(() => {
   })
   ipcMain.handle('get-installed-version', (_, game) => {
     const ver = getInstalledVersion(game)
-    console.log('Installed version of', game, 'is', ver)
     return ver
   })
   ipcMain.handle('get-latest-version', async (_, game) => await getLatestVersion(game))
   ipcMain.handle('get-game-meta', async (_, game) => games[game])
   ipcMain.handle('get-api-host', () => getApiHost())
+  ipcMain.handle(
+    'get-minecraft-server-infos',
+    async (_, ip, port) => await getMinecraftServerInfos(ip, port)
+  )
   ipcMain.handle('save-downloaded-file', async (_, { fileName, fileData }) => {
     try {
       const downloadsDir = path.join(getKeplerPath(), 'tmp')

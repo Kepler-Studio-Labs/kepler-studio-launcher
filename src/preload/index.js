@@ -27,6 +27,7 @@ const api = {
   getLatestVersion: (gameId) => ipcRenderer.invoke('get-latest-version', gameId),
   getGameMeta: (gameId) => ipcRenderer.invoke('get-game-meta', gameId),
   getApiHost: () => ipcRenderer.invoke('get-api-host'),
+  getMinecraftServerInfos: (ip, port) => ipcRenderer.invoke('get-minecraft-server-infos', ip, port),
   saveDownloadedFile: (data) => ipcRenderer.invoke('save-downloaded-file', data),
   unzipDownloadedFiles: (gameId) => ipcRenderer.invoke('unzip-downloaded-files', gameId),
   unzipDownloadedFiles_jre: (platform, arch) =>
