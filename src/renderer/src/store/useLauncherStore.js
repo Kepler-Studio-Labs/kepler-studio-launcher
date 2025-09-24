@@ -70,7 +70,7 @@ export const useLauncherStore = create((set, get) => ({
           await window.api.saveVersionFile(gameId, get().latestVersions[gameId])
           console.log(get().latestVersions[gameId])
           await get().fetchVersions(gameId)
-          set({ state: 'ready', gameId: null })
+          set({ state: 'idle', gameId: null })
         } else {
           console.error('Erreur lors de la décompression :', unzipResult.error)
           set({ state: 'idle', gameId: null })

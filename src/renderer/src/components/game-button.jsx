@@ -95,24 +95,38 @@ export const GameButton = ({ gameId }) => {
           )}
         />
         {state === 'downloading' && gameIdStore === gameId && (
-          <span className="z-20 font-medium text-from-left-animation">
-            <Loader className="inline-block w-5 h-5 mr-2" />
-            Téléchargement ({progress}%)
-          </span>
+          <>
+            <span className="z-20 font-medium text-from-left-animation">
+              <Loader className="inline-block w-5 h-5 mr-2" />
+              Téléchargement ({progress}%)
+            </span>
+            <div
+              className={cn(
+                'absolute w-0 z-10 opacity-100 bottom-0 left-0 h-1 bg-gradient-to-l from-indigo-400 via-purple-400 to-pink-400 transition-all duration-200',
+                `max-w-full min-w-0`
+              )}
+              style={{ width: `${progress}%` }}
+            />
+          </>
         )}
         {state === 'unzipping' && gameIdStore === gameId && (
-          <span className="z-20 font-medium text-from-left-animation">
-            <Loader className="inline-block w-5 h-5 mr-2" />
-            Décompression
-          </span>
+          <>
+            <span className="z-20 font-medium text-from-left-animation">
+              <Loader className="inline-block w-5 h-5 mr-2" />
+              Décompression
+            </span>
+            <div className="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-l from-indigo-400 via-purple-400 to-pink-400 group-hover:w-full transition-all duration-500" />
+          </>
         )}
         {state === 'idle' && (
-          <span className="z-20 font-medium text-from-left-animation">
-            <DownloadIcon className="inline-block w-5 h-5 mr-2" />
-            Installer
-          </span>
+          <>
+            <span className="z-20 font-medium text-from-left-animation">
+              <DownloadIcon className="inline-block w-5 h-5 mr-2" />
+              Installer
+            </span>
+            <div className="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-l from-indigo-400 via-purple-400 to-pink-400 group-hover:w-full transition-all duration-500" />
+          </>
         )}
-        <div className="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-l from-indigo-400 via-purple-400 to-pink-400 group-hover:w-full transition-all duration-500" />
       </button>
     )
 
