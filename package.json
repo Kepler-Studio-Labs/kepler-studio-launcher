@@ -31,7 +31,6 @@
     "electron-updater": "^6.6.2",
     "fs-extra": "^11.3.1",
     "lucide-react": "^0.487.0",
-    "minecraft-server-util": "^5.4.4",
     "motion": "^12.23.12",
     "nanoid": "^5.1.6",
     "prop-types": "^15.8.1",

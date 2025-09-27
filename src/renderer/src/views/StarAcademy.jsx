@@ -9,15 +9,15 @@ import { useState, useEffect } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../components/ui/tooltip'
 
 function StarAcademy() {
-  const [onlinePlayers, setOnlinePlayers] = useState([])
+  const [serverData, setServerData] = useState({})
 
   useEffect(() => {
     const check = () => {
-      window.api.getMinecraftServerInfos('51.91.214.188', 26000).then((data) => {
-        setOnlinePlayers(data.players)
+      fetch('https://api.mcstatus.io/v2/status/java/star-academy.kepler-studio.com').then((res) => res.json()).then((data) => {
+        setServerData(data)
       })
     }
-    const interval = setInterval(check, 10 * 1000)
+    const interval = setInterval(check, 30 * 1000)
     check()
     return () => clearInterval(interval)
   }, [])
@@ -50,20 +50,20 @@ function StarAcademy() {
                   . <SettingsIcon className="w-4 h-4 text-gray-400" strokeWidth={2} /> .
                 </button>
               </div>
-              <div className="flex items-center gap-2">
+              {serverData.players && <div className="flex items-center gap-2">
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <span className="inline-flex h-8 animate-shimmer items-center justify-center rounded-md border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-3 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 text-sm">
-                      <RocketIcon className="w-4 h-4 mr-1" strokeWidth={2} /> {onlinePlayers.length}{' '}
+                      <RocketIcon className="w-4 h-4 mr-1" strokeWidth={2} /> {serverData.players.online}{' '}
                       personne
-                      {onlinePlayers.length === 1 ? '' : 's'} en jeu{' '}
+                      {serverData.players.online === 1 ? '' : 's'} en jeu{' '}
                     </span>
                   </TooltipTrigger>
                   <TooltipContent side="right">
-                    {onlinePlayers.length > 0 ? (
+                    {serverData.players.online > 0 ? (
                       <div className="animate-shimmer bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] p-2 rounded-lg border border-slate-800 text-white space-y-1">
-                        {onlinePlayers.map((player) => (
-                          <p key={player}>{player}</p>
+                        {serverData.players.list.map((player) => (
+                          <p key={player.uuid}>{player.name_raw}</p>
                         ))}
                       </div>
                     ) : null}
@@ -72,7 +72,7 @@ function StarAcademy() {
                 <span className="inline-flex h-8 animate-shimmer items-center justify-center rounded-md border border-yellow-800 bg-[linear-gradient(110deg,#ff3b3b,45%,#f78239,55%,#ff3b3b)] bg-[length:200%_100%] px-3 font-medium text-white transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 text-sm">
                   <CloudAlertIcon className="w-4 h-4 mr-1" strokeWidth={3} /> Stats indisponibles
                 </span>
-              </div>
+              </div>}
             </div>
             <div></div>
             <img
