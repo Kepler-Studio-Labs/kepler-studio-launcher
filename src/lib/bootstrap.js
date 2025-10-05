@@ -32,13 +32,12 @@ function parseCommandLine(str, gameId, platform, arch) {
     getJavaDir(platform, arch),
     platform === 'windows' ? 'javaw.exe' : 'java'
   )
-  const customJavaPath = escapeSpaces(
-    resolve(
-      getGameDir(gameMeta.id, true),
-      'runtime',
-      platform,
-      platform === 'windows' ? 'bin/javaw.exe' : 'Contents/Home/bin/java'
-    )
+
+  const customJavaPath = resolve(
+    getGameDir(gameMeta.id, true),
+    'runtime',
+    platform,
+    platform === 'windows' ? 'bin/javaw.exe' : 'Contents/Home/bin/java'
   )
 
   let finalJavaPath = classicJavaPath
@@ -46,7 +45,7 @@ function parseCommandLine(str, gameId, platform, arch) {
 
   return str
     .replaceAll('\\', platform === 'windows' ? '\\' : '/')
-    .replaceAll('{java}', finalJavaPath)
+    .replaceAll('{java}', `"${finalJavaPath}"`)
     .replaceAll('{xmx}', '-Xmx8G')
     .replaceAll('{path}', escapeSpaces(getGameDir(gameMeta.id, true)))
     .replaceAll('{uuid}', authData.id)
@@ -88,13 +87,13 @@ export const bootstrapGame = (gameId) => {
   const child =
     platform === 'windows'
       ? spawn('cmd.exe', ['/c', execBatPath], {
-          cwd: getGameDir(gameMeta.id, true),
-          shell: false
-        })
+        cwd: getGameDir(gameMeta.id, true),
+        shell: false
+      })
       : spawn('/bin/bash', [execShPath], {
-          cwd: getGameDir(gameMeta.id, true),
-          shell: false
-        })
+        cwd: getGameDir(gameMeta.id, true),
+        shell: false
+      })
 
   return child
 }
