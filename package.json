@@ -3,8 +3,8 @@
   "version": "2.0.0",
   "description": "Kepler Studio Game Launcher",
   "main": "./out/main/index.js",
-  "author": "kepler-studio.com",
-  "homepage": "https://gaming.kepler-studio.com",
+  "author": "kepler-industries.com",
+  "homepage": "https://legacy-gaming.kepler-industries.com",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache .",

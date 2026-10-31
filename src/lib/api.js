@@ -1,7 +1,7 @@
-export const getApiHost = () => 'https://launcher-api.kepler-studio.com'
+export const getApiHost = () => 'https://legacy-launcher-api.kepler-industries.com'
 
-export const getAuthApiHost = () => 'https://auth.kepler-studio.com/api'
+export const getAuthApiHost = () => 'https://legacy-auth.kepler-industries.com/api'
 
-export const getAuthLink = () => 'https://auth.kepler-studio.com/service/launcher'
+export const getAuthLink = () => 'https://legacy-auth.kepler-industries.com/service/launcher'
 
-export const getHandshakeURL = () => 'https://auth.kepler-studio.com/api/handshake'
+export const getHandshakeURL = () => 'https://legacy-auth.kepler-industries.com/api/handshake'

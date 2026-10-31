@@ -13,7 +13,7 @@ function StarAcademy() {
 
   useEffect(() => {
     const check = () => {
-      fetch('https://api.mcstatus.io/v2/status/java/star-academy.kepler-studio.com').then((res) => res.json()).then((data) => {
+      fetch('https://api.mcstatus.io/v2/status/java/legacy-star-academy.kepler-industries.com').then((res) => res.json()).then((data) => {
         setServerData(data)
       })
     }
